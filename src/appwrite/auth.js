@@ -1,3 +1,4 @@
+// start with appwrite auth service
 import conf from "../conf/conf.js";
 import { Client, Account, ID } from "appwrite";
 
@@ -6,22 +7,20 @@ export class AuthService {
   account;
 
   constructor() {
-    this.Client.setEndpoint(conf.apppwriteUrl).setProject(
-      conf.appwriteProjectId
-    );
-
-    this.account = new Account(client);
+    this.client
+      .setEndpoint(conf.appwriteUrl)
+      .setProject(conf.appwriteProjectId);
+    this.account = new Account(this.client);
   }
 
   async createAccount({ email, password, name }) {
     try {
       const userAccount = await this.account.create(
         ID.unique(),
-        password,
         email,
+        password,
         name
       );
-
       if (userAccount) {
         return this.login({ email, password });
       } else {
@@ -31,7 +30,6 @@ export class AuthService {
       throw error;
     }
   }
-
   async login({ email, password }) {
     try {
       return await this.account.createEmailSession(email, password);
@@ -39,7 +37,7 @@ export class AuthService {
       throw error;
     }
   }
-  async getCurrencUser() {
+  async getCurrentUser() {
     try {
       return await this.account.get();
     } catch (error) {
@@ -47,7 +45,6 @@ export class AuthService {
     }
     return null;
   }
-
   async logout() {
     try {
       await this.account.deleteSessions();
@@ -56,3 +53,7 @@ export class AuthService {
     }
   }
 }
+
+const authService = new AuthService();
+
+export default authService;
