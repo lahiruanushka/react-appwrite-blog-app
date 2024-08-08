@@ -27,29 +27,34 @@ export class AuthService {
         return userAccount;
       }
     } catch (error) {
+      console.error("Error in createAccount:", error);
       throw error;
     }
   }
+
   async login({ email, password }) {
     try {
-      return await this.account.createEmailSession(email, password);
+      return await this.account.createEmailPasswordSession(email, password);
     } catch (error) {
+      console.error("Error in login:", error);
       throw error;
     }
   }
+
   async getCurrentUser() {
     try {
       return await this.account.get();
     } catch (error) {
-      console.log("Appwrite service :: getCurrentUser() :: ", error);
+      console.error("Error in getCurrentUser:", error);
+      return null;
     }
-    return null;
   }
+
   async logout() {
     try {
       await this.account.deleteSessions();
     } catch (error) {
-      console.log("Appwrite service :: logout() :: ", error);
+      console.error("Error in logout:", error);
     }
   }
 }

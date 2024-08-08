@@ -45,13 +45,13 @@ export class Service {
       return await this.databases.createDocument(
         conf.appwriteDatabaseId,
         conf.appwriteCollectionId,
-        slug,
+        ID.unique(), // Use a unique ID for the document
         {
           title,
           content,
-          featuredImage,
+          featuredimage: featuredImage, // Ensure this matches the attribute name in your schema
           status,
-          userId,
+          userid: userId, // Ensure this matches the attribute name in your schema
         }
       );
     } catch (error) {
@@ -69,7 +69,7 @@ export class Service {
         {
           title,
           content,
-          featuredImage,
+          featuredimage: featuredImage, // Ensuring the attribute name matches exactly
           status,
         }
       );
@@ -93,7 +93,7 @@ export class Service {
     }
   }
 
-  // storage service
+  // Storage service
 
   async uploadFile(file) {
     try {
@@ -117,8 +117,11 @@ export class Service {
     }
   }
 
-  getFilePreview(fileId) {
-    return this.bucket.getFilePreview(conf.appwriteBucketId, fileId).href;
+  async getFilePreview(fileId) {
+    if (!fileId) {
+      throw new Error("File ID is required.");
+    }
+    return `${conf.appwriteEndpoint}/storage/files/${fileId}/preview`;
   }
 }
 
