@@ -121,7 +121,29 @@ export class Service {
     if (!fileId) {
       throw new Error("File ID is required.");
     }
-    return `${conf.appwriteEndpoint}/storage/files/${fileId}/preview`;
+
+    try {
+      const result = await this.bucket.getFilePreview(
+        conf.appwriteBucketId, // Use your actual bucket ID here
+        fileId, // file ID
+        1800, // width; will be resized using this value.
+        0, // height; ignored when 0
+        "center", // crop center
+        "90", // slight compression
+        5, // border width
+        "CDCA30", // border color
+        15, // border radius
+        1, // full opacity
+        0, // no rotation
+        "FFFFFF", // background color
+        "jpg" // output jpg format
+      );
+
+      return result.href; // Return the URL for the image preview
+    } catch (error) {
+      console.error("Error fetching file preview:", error);
+      throw error; // Rethrow the error for further handling if needed
+    }
   }
 }
 

@@ -1,21 +1,37 @@
-import React from "react";
 import appwriteService from "../appwrite/config";
-import { useState } from "react";
-import { useEffect } from "react";
-import Container from "../components/container/Container";
-import PostCard from "../components/PostCard";
+import { useState, useEffect } from "react";
+import { Container, PostCard } from "../components";
 
 function AllPosts() {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    appwriteService.getPosts([]).then((posts) => {
-      if (posts) {
-        setPosts(posts.documents);
+    const fetchPosts = async () => {
+      try {
+        const posts = await appwriteService.getPosts([]);
+        if (posts) {
+          console.log(posts);
+          setPosts(posts.documents);
+        }
+      } catch (error) {
+        console.error("Error fetching posts:", error);
       }
-    });
+    };
+
+    fetchPosts();
   }, []);
-  //TODO: add case for array length 0
+
+  // Handle case for empty posts array
+  if (posts.length === 0) {
+    return (
+      <div className="w-full py-8">
+        <Container>
+          <h2>No posts available.</h2>
+        </Container>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full py-8">
       <Container>

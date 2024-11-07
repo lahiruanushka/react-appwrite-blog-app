@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-
 import appwriteService from "../appwrite/config";
-import Button from "../components/Button";
-import Container from "../components/container/Container";
-
+import { Button, Container } from "../components";
 import parse from "html-react-parser";
 import { useSelector } from "react-redux";
 
 function Post() {
   const [post, setPost] = useState(null);
+  const [imageUrl, setImageUrl] = useState(""); // State for the image URL
   const { slug } = useParams();
   const navigate = useNavigate();
   const userData = useSelector((state) => state.auth.userData);
@@ -19,7 +17,15 @@ function Post() {
     if (slug) {
       appwriteService.getPost(slug).then((post) => {
         if (post) {
+          console.log(post)
           setPost(post);
+          // Fetch the image preview URL
+          appwriteService
+            .getFilePreview(post.featuredimage)
+            .then((url) => setImageUrl(url))
+            .catch((error) =>
+              console.error("Error fetching image preview:", error)
+            );
         } else {
           navigate("/");
         }
@@ -35,15 +41,18 @@ function Post() {
       }
     });
   };
+
   return post ? (
     <div className="py-8">
       <Container>
         <div className="w-full flex justify-center mb-4 relative border rounded-xl p-2">
-          <img
-            src={appwriteService.getFilePreview(post.featuredImage)}
-            alt={post.title}
-            className="rounded-xl"
-          />
+          {imageUrl ? ( // Check if imageUrl is available
+            <img src={imageUrl} alt={post.title} className="rounded-xl" />
+          ) : (
+            <div className="bg-gray-300 h-48 w-full rounded-xl flex items-center justify-center">
+              <span>Loading Image...</span>
+            </div>
+          )}
           {isAuthor && (
             <div className="absolute-right-6 top-6">
               <Link to={`/edit-post/${post.$id}`}>
