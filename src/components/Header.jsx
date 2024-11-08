@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Menu, Transition } from "@headlessui/react";
 import { Link } from "react-router-dom";
-import { 
+import {
   LuHome,
   LuPencil,
   LuBookmark,
@@ -11,9 +11,9 @@ import {
   LuSun,
   LuMenu,
   LuX,
-  LuLogOut
+  LuLogOut,
 } from "react-icons/lu";
-import authService from "../appwrite/auth.js";
+import authService from "../api/authService.js";
 import { logout } from "../store/authSlice.js";
 
 const Header = () => {
@@ -23,10 +23,10 @@ const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navItems = [
-    { name: 'Home', href: '/', icon: LuHome },
-    { name: 'Write', href: '/create-post', icon: LuPencil },
-    { name: 'Bookmarks', href: '/bookmarks', icon: LuBookmark },
-    { name: 'Profile', href: '/profile', icon: LuUser },
+    { name: "Home", href: "/", icon: LuHome },
+    { name: "Write", href: "/create-post", icon: LuPencil },
+    { name: "Bookmarks", href: "/bookmarks", icon: LuBookmark },
+    { name: "Profile", href: "/profile", icon: LuUser },
   ];
 
   const handleDarkModeToggle = () => {
@@ -53,7 +53,7 @@ const Header = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex-shrink-0 flex items-center">
-            <Link 
+            <Link
               to="/"
               className="flex items-center space-x-2 text-gray-900 dark:text-white"
             >
@@ -75,7 +75,7 @@ const Header = () => {
                 <span>{item.name}</span>
               </Link>
             ))}
-            
+
             {/* Dark Mode Toggle */}
             <button
               onClick={handleDarkModeToggle}
@@ -146,7 +146,7 @@ const Header = () => {
                 <span>{item.name}</span>
               </Link>
             ))}
-            
+
             <div className="flex items-center justify-between px-3 py-2">
               <button
                 onClick={handleDarkModeToggle}
@@ -158,7 +158,7 @@ const Header = () => {
                   <LuMoon className="w-5 h-5" />
                 )}
               </button>
-              
+
               {authStatus ? (
                 <button
                   onClick={() => {

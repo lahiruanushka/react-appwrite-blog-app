@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import {
-  PostCard,
   SearchBar,
   HeroSection,
   FeaturedPosts,
   CategoryFilter,
   PopularPosts,
 } from "../components";
-import appwriteService from "../appwrite/config";
+
 import { Puff } from "react-loader-spinner";
+import postService from "../api/postService";
 
 function Home() {
   const [posts, setPosts] = useState([]);
@@ -18,9 +18,9 @@ function Home() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const posts = await appwriteService.getPosts();
-        if (posts) {
-          setPosts(posts.documents);
+        const fetchedPosts = await postService.getPosts();
+        if (fetchedPosts) {
+          setPosts(fetchedPosts.documents);
         }
       } catch (err) {
         console.error("Error fetching posts:", err);

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import authService from "../appwrite/auth";
+import authService from "../api/authService";
 import { Input, Logo, Button } from "../components";
 import { login as authLogin } from "../store/authSlice";
 import { Dialog } from "@headlessui/react"; // Headless UI Modal

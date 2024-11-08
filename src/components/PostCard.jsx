@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaChevronRight } from "react-icons/fa";
 import { format } from "date-fns";
-import appwriteService from "../appwrite/config.js";
 import parse from "html-react-parser";
+import storageService from "../api/storageService";
 
 function PostCard({
   $createdAt,
@@ -13,6 +13,7 @@ function PostCard({
   featuredimage,
   title,
   userid,
+  $slug,
 }) {
   const [previewUrl, setPreviewUrl] = useState("");
 
@@ -20,7 +21,7 @@ function PostCard({
     const fetchPreviewUrl = async () => {
       if (featuredimage) {
         try {
-          const url = await appwriteService.getFilePreview(featuredimage);
+          const url = await storageService.getFilePreview(featuredimage);
           setPreviewUrl(url);
         } catch (error) {
           console.error("Error fetching image preview:", error);
@@ -51,9 +52,10 @@ function PostCard({
           <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-3 line-clamp-2">
             {title}
           </h2>
-          <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-3">
+          <div className="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-3">
             {parse(content)}
-          </p>
+          </div>
+
           <div className="flex justify-between items-center text-sm text-gray-500 dark:text-gray-400">
             {/* Date Info */}
             <div>
