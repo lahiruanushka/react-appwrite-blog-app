@@ -6,7 +6,7 @@ import parse from "html-react-parser";
 import { useSelector } from "react-redux";
 import { FaRegEdit, FaTrashAlt } from "react-icons/fa";
 
-function Post() {
+function PostPage() {
   const [post, setPost] = useState(null);
   const [imageUrl, setImageUrl] = useState(""); // State for the image URL
   const { slug } = useParams();
@@ -84,4 +84,4 @@ function Post() {
   ) : null;
 }
 
-export default Post;
+export default PostPage;

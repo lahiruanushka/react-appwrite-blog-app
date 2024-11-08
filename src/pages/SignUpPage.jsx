@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 import { login } from "../store/authSlice";
 import { Dialog } from "@headlessui/react";
 
-function Signup() {
+function SignUpPage() {
   const navigate = useNavigate();
   const [error, setError] = useState("");
   const dispatch = useDispatch();
@@ -99,4 +99,4 @@ function Signup() {
   );
 }
 
-export default Signup;
+export default SignUpPage;

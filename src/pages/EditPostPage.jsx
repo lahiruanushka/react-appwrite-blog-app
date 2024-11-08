@@ -5,7 +5,7 @@ import appwriteService from "../appwrite/config";
 import { useEffect } from "react";
 import { Container, PostForm } from "../components";
 
-function EditPost() {
+function EditPostPage() {
   const [post, setPost] = useState(null);
   const { slug } = useParams();
   const navigate = useNavigate();
@@ -31,4 +31,4 @@ function EditPost() {
   );
 }
 
-export default EditPost;
+export default EditPostPage;

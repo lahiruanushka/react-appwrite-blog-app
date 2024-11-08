@@ -7,7 +7,7 @@ import { Input, Logo, Button } from "../components";
 import { login as authLogin } from "../store/authSlice";
 import { Dialog } from "@headlessui/react"; // Headless UI Modal
 
-function Login() {
+function LoginPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { register, handleSubmit } = useForm();
@@ -92,4 +92,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default LoginPage;
