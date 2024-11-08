@@ -5,10 +5,10 @@ import { useSelector } from "react-redux";
 import parse from "html-react-parser";
 import { FiEdit2, FiTrash2, FiShare2 } from "react-icons/fi";
 import { Puff } from "react-loader-spinner";
-import postService from "/src/api/postService.js";
+import postService from "/src/api/postService";
 import storageService from "../api/storageService";
 import userService from "../api/userService";
-import BlankProfileImage from "../assets/images/blank-profile-picture-973460_1280 (1).png";
+import BlankProfileImage from "../assets/images/blank-profile-picture.png";
 
 const PostPage = () => {
   const [post, setPost] = useState(null);
