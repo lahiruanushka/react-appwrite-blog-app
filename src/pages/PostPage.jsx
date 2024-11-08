@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import appwriteService from "../appwrite/config";
-import { Container, Button } from "../components";
+import {Button } from "../components";
 import parse from "html-react-parser";
 import { useSelector } from "react-redux";
 import { FaRegEdit, FaTrashAlt } from "react-icons/fa";
@@ -47,7 +47,7 @@ function PostPage() {
 
   return post ? (
     <div className="py-12">
-      <Container>
+ 
         <div className="max-w-3xl mx-auto">
           <div className="mb-8">
             {imageUrl ? ( // Check if imageUrl is available
@@ -79,7 +79,7 @@ function PostPage() {
             </div>
           )}
         </div>
-      </Container>
+
     </div>
   ) : null;
 }

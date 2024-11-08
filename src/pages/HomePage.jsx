@@ -1,41 +1,75 @@
 import React, { useState, useEffect } from "react";
-import { Container, PostCard } from "../components";
+import {
+  PostCard,
+  SearchBar,
+  HeroSection,
+  FeaturedPosts,
+  CategoryFilter,
+  PopularPosts,
+} from "../components";
 import appwriteService from "../appwrite/config";
+import { Puff } from "react-loader-spinner";
 
 function Home() {
   const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    appwriteService.getPosts([]).then((posts) => {
-      if (posts) {
-        setPosts(posts.documents);
+    const fetchPosts = async () => {
+      try {
+        const posts = await appwriteService.getPosts();
+        if (posts) {
+          setPosts(posts.documents);
+        }
+      } catch (err) {
+        console.error("Error fetching posts:", err);
+        setError("Failed to load posts. Please try again later.");
+      } finally {
+        setLoading(false);
       }
-    });
+    };
+
+    fetchPosts();
   }, []);
 
-  if (posts.length === 0) {
-    return (
-      <div className="w-full py-8 bg-gray-100">
-        <Container>
-          <div className="flex justify-center items-center h-[50vh]">
-            <h1 className="text-2xl font-bold">Login to read posts</h1>
-          </div>
-        </Container>
-      </div>
-    );
-  }
+  const handleSearch = () => {};
+
+  const categories = [
+    { id: 1, name: "All" },
+    { id: 2, name: "Development" },
+    { id: 3, name: "Design" },
+    { id: 4, name: "Marketing" },
+    { id: 5, name: "Business" },
+  ];
 
   return (
-    <div className="w-full py-8 bg-gray-100">
-      <Container>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {posts.map((post) => (
-            <div key={post.$id}>
-              <PostCard {...post} />
-            </div>
-          ))}
+    <div className="w-full py-8 transition-colors duration-300 bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+      <HeroSection />
+      {loading && (
+        <div className="flex justify-center items-center h-[50vh]">
+          <Puff
+            visible={true}
+            height="80"
+            width="80"
+            color="#8a2be2"
+            ariaLabel="puff-loading"
+            wrapperStyle={{}}
+            wrapperClass=""
+          />
         </div>
-      </Container>
+      )}
+
+      {error && (
+        <div className="flex justify-center items-center h-[50vh]">
+          <h1 className="text-2xl font-bold text-red-500">{error}</h1>
+        </div>
+      )}
+
+      <FeaturedPosts posts={posts} />
+      <CategoryFilter categories={categories} />
+      <SearchBar onSearch={handleSearch} />
+      <PopularPosts posts={posts} />
     </div>
   );
 }

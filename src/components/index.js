@@ -7,8 +7,12 @@ import PostCard from "./PostCard";
 import PostForm from "./PostForm";
 import RTE from "./RTE";
 import Select from "./Select";
-import Container from "./Container";
 import Button from "./Button";
+import SearchBar from "./SearchBar";
+import HeroSection from "./HeroSection";
+import FeaturedPosts from "./FeaturedPosts";
+import PopularPosts from "./PopularPosts";
+import CategoryFilter from "./CategoryFilter";
 
 export {
   AuthLayout,
@@ -21,5 +25,9 @@ export {
   PostForm,
   RTE,
   Select,
-  Container,
+  SearchBar,
+  HeroSection,
+  FeaturedPosts,
+  PopularPosts,
+  CategoryFilter,
 };
