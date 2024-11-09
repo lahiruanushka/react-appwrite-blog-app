@@ -13,6 +13,7 @@ import { FiEdit2 } from "react-icons/fi";
 import { BiX } from "react-icons/bi";
 import BlankProfilePicture from "../assets/images/blank-profile-picture.png";
 import { Puff } from "react-loader-spinner";
+import { useToast } from "../context/ToastContext";
 
 const PostPage = () => {
   const [post, setPost] = useState(null);
@@ -21,10 +22,14 @@ const PostPage = () => {
   const [loading, setLoading] = useState(true);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [showShareToast, setShowShareToast] = useState(false);
+  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
+
   const { postId } = useParams();
   const navigate = useNavigate();
   const userData = useSelector((state) => state.user.userData);
   const isAuthor = post && userData ? post.userid === userData.$id : false;
+  const { showToast } = useToast();
 
   useEffect(() => {
     fetchPostAndImage();
@@ -73,7 +78,8 @@ const PostPage = () => {
   };
 
   const handleBookmark = async () => {
-    console.log("Add to Bookmarks");
+    setIsBookmarked(!isBookmarked);
+    showToast("Post added to bookmarks successfully!", "success");
   };
 
   const deletePost = async () => {
@@ -147,13 +153,44 @@ const PostPage = () => {
             whileHover={{ scale: 1.02 }}
             transition={{ duration: 0.3 }}
           >
-            {imageUrl && (
-              <img
-                src={imageUrl}
-                alt={post.title}
-                className="w-full h-full object-cover transform transition-transform duration-500"
-              />
-            )}
+            {/* Image Container */}
+            <div className="relative aspect-[16/10] overflow-hidden bg-gray-100 dark:bg-gray-700">
+              {imageUrl ? (
+                <motion.img
+                  src={imageUrl}
+                  alt={post.title}
+                  onLoad={() => setImageLoaded(true)}
+                  initial={{ opacity: 0, scale: 1.1 }}
+                  animate={{
+                    opacity: imageLoaded ? 1 : 0,
+                    scale: imageLoaded ? 1 : 1.1,
+                  }}
+                  transition={{ duration: 0.3 }}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-16 h-16 rounded-full border-4 border-gray-200 dark:border-gray-600 border-t-purple-500 animate-spin" />
+                </div>
+              )}
+
+              {/* Bookmark Button */}
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={handleBookmark}
+                className="absolute top-4 right-4 p-2 rounded-full bg-white/90 dark:bg-gray-800/90 shadow-lg backdrop-blur-sm"
+              >
+                <LuBookMarked
+                  className={`w-5 h-5 ${
+                    isBookmarked
+                      ? "fill-purple-500 text-purple-500"
+                      : "text-gray-600 dark:text-gray-300"
+                  }`}
+                />
+              </motion.button>
+            </div>
+
             {isAuthor && (
               <div className="absolute top-4 right-4 flex gap-2">
                 <motion.div whileHover={{ scale: 1.1 }}>
@@ -220,7 +257,7 @@ const PostPage = () => {
             </motion.div>
           </div>
 
-          {/* Share Button & BookMark Button */}
+          {/* Share Button */}
           <motion.div
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -235,15 +272,6 @@ const PostPage = () => {
             >
               <LuShare2 className="w-5 h-5 mr-2" />
               Share Post
-            </motion.button>
-
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={handleBookmark}
-              className="inline-flex items-center px-6 py-3 ml-3 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
-            >
-              <LuBookMarked className="w-5 h-5 mr-2" /> Bookmark Post
             </motion.button>
           </motion.div>
         </motion.div>

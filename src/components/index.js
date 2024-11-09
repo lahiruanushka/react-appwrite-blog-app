@@ -13,6 +13,7 @@ import FeaturedPosts from "./FeaturedPosts";
 import PopularPosts from "./DiscoverStories";
 import CategoryFilter from "./CategoryFilter";
 import ScrollToTop from "./ScrollToTop";
+import ToastMessage from "./ToastMessage";
 
 export {
   AuthLayout,
@@ -30,4 +31,5 @@ export {
   PopularPosts,
   CategoryFilter,
   ScrollToTop,
+  ToastMessage
 };

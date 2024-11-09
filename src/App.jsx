@@ -1,23 +1,11 @@
 import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-
-// User Pages
 import HomePage from "./pages/HomePage";
 import CategoryPage from "./pages/CategoryPage";
 import SearchPage from "./pages/SearchPage";
 import AuthorPage from "./pages/AuthorPage";
 import UserProfilePage from "./pages/UserProfilePage";
 import PostPage from "./pages/PostPage";
-
-// Admin Pages
-// import AdminDashboard from './admin/AdminDashboard';
-// import PostManagementPage from './admin/PostManagementPage';
-// import CreateEditPostPage from './admin/CreateEditPostPage';
-// import CategoryManagementPage from './admin/CategoryManagementPage';
-// import CommentModerationPage from './admin/CommentModerationPage';
-// import UserManagementPage from './admin/UserManagementPage';
-// import SettingsPage from './admin/SettingsPage';
-
 import { Header, Footer, ScrollToTop } from "./components";
 import NotFoundPage from "./pages/NotFoundPage";
 import AddPostPage from "./pages/AddPostPage";
@@ -26,6 +14,7 @@ import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignupPage";
 import BookmarksPage from "./pages/BookmarksPage";
 import { useSelector } from "react-redux";
+import { ToastProvider } from "./context/ToastContext";
 
 function App() {
   const theme = useSelector((state) => state.theme.theme);
@@ -37,42 +26,34 @@ function App() {
   return (
     <Router>
       <Header />
-      <Routes>
-        {/* User-Facing Routes */}
-        <Route path="/" element={<HomePage />} />
-        <Route path="/post/:postId" element={<PostPage />} />
-        <Route path="/category/:categoryId" element={<CategoryPage />} />
-        <Route path="/search" element={<SearchPage />} />
-        <Route path="/author/:authorId" element={<AuthorPage />} />
+      <ToastProvider>
+        <Routes>
+          {/* User-Facing Routes */}
+          <Route path="/" element={<HomePage />} />
+          <Route path="/post/:postId" element={<PostPage />} />
+          <Route path="/category/:categoryId" element={<CategoryPage />} />
+          <Route path="/search" element={<SearchPage />} />
+          <Route path="/author/:authorId" element={<AuthorPage />} />
 
-        {/* Private Routes */}
-        <Route path="create-post" element={<AddPostPage />} />
-        <Route path="edit-post/:postId" element={<EditPostPage />} />
-        <Route path="/profile" element={<UserProfilePage />} />
-        <Route path="/bookmarks" element={<BookmarksPage />} />
+          {/* Private Routes */}
+          <Route path="create-post" element={<AddPostPage />} />
+          <Route path="edit-post/:postId" element={<EditPostPage />} />
+          <Route path="/profile" element={<UserProfilePage />} />
+          <Route path="/bookmarks" element={<BookmarksPage />} />
 
-        {/* Auth Routes */}
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignUpPage />} />
+          {/* Auth Routes */}
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
 
-        {/* Admin Routes */}
-        {/* <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/admin/posts" element={<PostManagementPage />} />
-        <Route path="/admin/posts/new" element={<CreateEditPostPage />} />
-        <Route path="/admin/posts/edit/:postId" element={<CreateEditPostPage />} />
-        <Route path="/admin/categories" element={<CategoryManagementPage />} />
-        <Route path="/admin/comments" element={<CommentModerationPage />} />
-        <Route path="/admin/users" element={<UserManagementPage />} />
-        <Route path="/admin/settings" element={<SettingsPage />} /> */}
+          {/* Redirect unknown routes */}
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
 
-        {/* Redirect unknown routes */}
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
+        {/* Scroll to top on every route change */}
+        <ScrollToTop />
 
-      {/* Scroll to top on every route change */}
-      <ScrollToTop />
-
-      <Footer />
+        <Footer />
+      </ToastProvider>
     </Router>
   );
 }
