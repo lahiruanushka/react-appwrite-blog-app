@@ -10,7 +10,7 @@ import Button from "./Button";
 import SearchBar from "./SearchBar";
 import HeroSection from "./HeroSection";
 import FeaturedPosts from "./FeaturedPosts";
-import PopularPosts from "./PopularPosts";
+import PopularPosts from "./DiscoverStories";
 import CategoryFilter from "./CategoryFilter";
 import ScrollToTop from "./ScrollToTop";
 
