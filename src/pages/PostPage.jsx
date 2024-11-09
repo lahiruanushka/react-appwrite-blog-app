@@ -42,7 +42,7 @@ const PostPage = () => {
           setPost(fetchedPost);
           fetchPostAuthor(fetchedPost.userid);
           const url = await storageService.getFilePreview(
-            fetchedPost.featuredimage
+            fetchedPost.featuredImage
           );
           setImageUrl(url);
         } else {
@@ -78,11 +78,19 @@ const PostPage = () => {
   };
 
   const handleBookmark = async () => {
-    setIsBookmarked(!isBookmarked);
-    showToast(
-      "Added to Bookmarks!",
-      <LuBookmark className="h-6 w-6 text-blue-400" />
-    );
+    if (isBookmarked) {
+      setIsBookmarked(false);
+      showToast(
+        "Remove from Bookmarks!",
+        <LuBookmark className="h-6 w-6 text-blue-400" />
+      );
+    } else {
+      setIsBookmarked(true);
+      showToast(
+        "Added to Bookmarks!",
+        <LuBookmark className="h-6 w-6 text-blue-400" />
+      );
+    }
   };
 
   const deletePost = async () => {
@@ -90,7 +98,7 @@ const PostPage = () => {
       if (post) {
         const status = await postService.deletePost(post.$id);
         if (status) {
-          await storageService.deleteFile(post.featuredimage);
+          await storageService.deleteFile(post.featuredImage);
           navigate("/");
         }
       }

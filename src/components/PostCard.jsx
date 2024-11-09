@@ -17,7 +17,7 @@ const PostCard = ({
   $id,
   $updatedAt,
   content,
-  featuredimage,
+  featuredImage,
   title,
   userid,
   $slug,
@@ -30,25 +30,35 @@ const PostCard = ({
 
   useEffect(() => {
     const fetchPreviewUrl = async () => {
-      if (featuredimage) {
+      if (featuredImage) {
         try {
-          const url = await storageService.getFilePreview(featuredimage);
+          const url = await storageService.getFilePreview(featuredImage);
           setPreviewUrl(url);
+          console.log(previewUrl)
         } catch (error) {
           console.error("Error fetching image preview:", error);
         }
       }
     };
     fetchPreviewUrl();
-  }, [featuredimage]);
+  }, [featuredImage]);
 
-  const handleBookmark = (e) => {
+  const handleBookmark = async (e) => {
     e.preventDefault();
-    setIsBookmarked(!isBookmarked);
-    showToast(
-      "Added to Bookmarks!",
-      <LuBookmark className="h-6 w-6 text-blue-400" />
-    );
+
+    if (isBookmarked) {
+      setIsBookmarked(false);
+      showToast(
+        "Remove from Bookmarks!",
+        <LuBookmark className="h-6 w-6 text-blue-400" />
+      );
+    } else {
+      setIsBookmarked(true);
+      showToast(
+        "Added to Bookmarks!",
+        <LuBookmark className="h-6 w-6 text-blue-400" />
+      );
+    }
   };
 
   return (

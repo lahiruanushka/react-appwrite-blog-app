@@ -39,7 +39,7 @@ const UserProfilePage = () => {
             ...currentUser,
             ...userProfile,
           });
-    
+
           const userPosts = await postService.getUserPosts(currentUser.$id);
           setUserPosts(userPosts);
         }
@@ -47,7 +47,7 @@ const UserProfilePage = () => {
         console.error("Error fetching user:", err);
         setError("Failed to load profile information.");
       } finally {
-        setLoading(false); 
+        setLoading(false);
       }
     };
 
@@ -133,7 +133,7 @@ const UserProfilePage = () => {
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
             Your Blog Posts
           </h2>
-          <div className="grid gap-6">
+          <div className="grid gap-6 grid-cols-1 sm:grid-cols-1 lg:grid-cols-2">
             {userPosts.map((post) => (
               <motion.div
                 key={post.$id}
