@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 // User Pages
@@ -26,8 +26,16 @@ import EditPostPage from './pages/EditPostPage';
 import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignupPage';
 import BookmarksPage from './pages/BookmarksPage';
+import { useSelector } from 'react-redux';
 
 function App() {
+
+  const theme = useSelector((state) => state.theme.theme);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+  }, [theme]);
+
   return (
     <Router>
       <Header />

@@ -14,12 +14,13 @@ import {
   LuLogOut,
 } from "react-icons/lu";
 import authService from "../services/authService.js";
-import { logout } from "../store/authSlice.js";
+import { logout } from "../store/userSlice.js";
+import { toggleTheme } from "../store/themeSlice.js";
 
 const Header = () => {
-  const authStatus = useSelector((state) => state.auth.status);
+  const theme = useSelector((state) => state.theme.theme);
+  const authStatus = useSelector((state) => state.user.status);
   const dispatch = useDispatch();
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navItems = [
@@ -29,16 +30,8 @@ const Header = () => {
     { name: "Profile", href: "/profile", icon: LuUser },
   ];
 
-  const handleDarkModeToggle = () => {
-    const newMode = !isDarkMode;
-    setIsDarkMode(newMode);
-    if (newMode) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
+  const handleThemeToggle = () => {
+    dispatch(toggleTheme());
   };
 
   const logoutHandler = () => {
@@ -78,10 +71,10 @@ const Header = () => {
 
             {/* Dark Mode Toggle */}
             <button
-              onClick={handleDarkModeToggle}
+              onClick={handleThemeToggle}
               className="p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors duration-200"
             >
-              {isDarkMode ? (
+              {theme === "light" ? (
                 <LuSun className="w-5 h-5" />
               ) : (
                 <LuMoon className="w-5 h-5" />
@@ -149,10 +142,10 @@ const Header = () => {
 
             <div className="flex items-center justify-between px-3 py-2">
               <button
-                onClick={handleDarkModeToggle}
+                onClick={handleThemeToggle}
                 className="p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors duration-200"
               >
-                {isDarkMode ? (
+                {theme === 'light' ? (
                   <LuSun className="w-5 h-5" />
                 ) : (
                   <LuMoon className="w-5 h-5" />

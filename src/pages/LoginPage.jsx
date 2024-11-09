@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import authService from "../services/authService";
 import { Input, Button } from "../components";
-import { login as authLogin } from "../store/authSlice";
+import { login as authLogin } from "../store/userSlice";
 import { Dialog } from "@headlessui/react"; // Headless UI Modal
 
 function LoginPage() {

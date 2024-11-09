@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Input, Button } from "../components";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
-import { login } from "../store/authSlice";
+import { login } from "../store/userSlice";
 import { Dialog } from "@headlessui/react";
 
 function SignUpPage() {
