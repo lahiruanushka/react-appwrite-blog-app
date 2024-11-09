@@ -5,11 +5,12 @@ import { format } from "date-fns";
 import parse from "html-react-parser";
 import storageService from "../services/storageService";
 import {
-  LuArrowRight,
+  LuBookmark,
   LuBookMarked,
   LuCalendar,
   LuClock,
 } from "react-icons/lu";
+import { useToast } from "../context/ToastContext";
 
 const PostCard = ({
   $createdAt,
@@ -24,6 +25,8 @@ const PostCard = ({
   const [previewUrl, setPreviewUrl] = useState("");
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
+
+  const { showToast } = useToast();
 
   useEffect(() => {
     const fetchPreviewUrl = async () => {
@@ -42,6 +45,10 @@ const PostCard = ({
   const handleBookmark = (e) => {
     e.preventDefault();
     setIsBookmarked(!isBookmarked);
+    showToast(
+      "Added to Bookmarks!",
+      <LuBookmark className="h-6 w-6 text-blue-400" />
+    );
   };
 
   return (

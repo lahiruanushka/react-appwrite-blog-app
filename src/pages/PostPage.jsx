@@ -8,9 +8,8 @@ import { Fragment } from "react";
 import postService from "../services/postService";
 import userService from "../services/userService";
 import storageService from "../services/storageService";
-import { LuBookMarked, LuShare2, LuTrash2 } from "react-icons/lu";
+import { LuBookmark, LuBookMarked, LuShare2, LuTrash2 } from "react-icons/lu";
 import { FiEdit2 } from "react-icons/fi";
-import { BiX } from "react-icons/bi";
 import BlankProfilePicture from "../assets/images/blank-profile-picture.png";
 import { Puff } from "react-loader-spinner";
 import { useToast } from "../context/ToastContext";
@@ -21,7 +20,6 @@ const PostPage = () => {
   const [imageUrl, setImageUrl] = useState("");
   const [loading, setLoading] = useState(true);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [showShareToast, setShowShareToast] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
 
@@ -73,13 +71,18 @@ const PostPage = () => {
 
   const handleShare = async () => {
     await navigator.clipboard.writeText(window.location.href);
-    setShowShareToast(true);
-    setTimeout(() => setShowShareToast(false), 2000);
+    showToast(
+      "Link copied to clipboard!",
+      <LuShare2 className="h-6 w-6 text-green-400" />
+    );
   };
 
   const handleBookmark = async () => {
     setIsBookmarked(!isBookmarked);
-    showToast("Post added to bookmarks successfully!", "success");
+    showToast(
+      "Added to Bookmarks!",
+      <LuBookmark className="h-6 w-6 text-blue-400" />
+    );
   };
 
   const deletePost = async () => {
@@ -347,40 +350,6 @@ const PostPage = () => {
             </Transition.Child>
           </div>
         </Dialog>
-      </Transition>
-
-      {/* Share Toast Notification */}
-      <Transition
-        show={showShareToast}
-        enter="transform ease-out duration-300 transition"
-        enterFrom="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
-        enterTo="translate-y-0 opacity-100 sm:translate-x-0"
-        leave="transition ease-in duration-100"
-        leaveFrom="opacity-100"
-        leaveTo="opacity-0"
-        className="fixed bottom-4 right-4"
-      >
-        <div className="max-w-sm w-full bg-gray-800 text-white rounded-lg shadow-lg pointer-events-auto ring-1 ring-black ring-opacity-5 p-4">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <LuShare2 className="h-6 w-6 text-green-400" aria-hidden="true" />
-            </div>
-            <div className="ml-3 w-0 flex-1">
-              <p className="text-sm font-medium text-white">
-                Link copied to clipboard!
-              </p>
-            </div>
-            <div className="ml-4 flex-shrink-0 flex">
-              <button
-                className="rounded-md inline-flex text-gray-400 hover:text-gray-300 focus:outline-none"
-                onClick={() => setShowShareToast(false)}
-              >
-                <span className="sr-only">Close</span>
-                <BiX className="h-5 w-5" />
-              </button>
-            </div>
-          </div>
-        </div>
       </Transition>
     </motion.div>
   );

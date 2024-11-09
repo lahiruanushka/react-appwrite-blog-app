@@ -8,9 +8,9 @@ const containerVariants = {
     opacity: 1,
     transition: {
       delayChildren: 0.3,
-      staggerChildren: 0.2
-    }
-  }
+      staggerChildren: 0.2,
+    },
+  },
 };
 
 const itemVariants = {
@@ -19,9 +19,9 @@ const itemVariants = {
     y: 0,
     opacity: 1,
     transition: {
-      duration: 0.5
-    }
-  }
+      duration: 0.5,
+    },
+  },
 };
 
 const HeroSection = () => {
@@ -42,14 +42,13 @@ const HeroSection = () => {
               <span className="block text-gray-900 dark:text-gray-100">
                 Welcome to
               </span>
-              <span className="block mt-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              <span className="block m-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent py-4">
                 BlogVerse
               </span>
             </motion.h1>
-            <motion.p 
-              className="mt-6 max-w-2xl mx-auto text-xl sm:text-2xl text-gray-600 dark:text-gray-300"
-            >
-              Discover the latest trends and insights in the blogosphere, where ideas come to life and stories unfold.
+            <motion.p className="mt-8 max-w-2xl mx-auto text-xl sm:text-2xl text-gray-600 dark:text-gray-300">
+              Discover the latest trends and insights in the blogosphere, where
+              ideas come to life and stories unfold.
             </motion.p>
           </motion.div>
 
@@ -65,7 +64,7 @@ const HeroSection = () => {
               Start Reading
               <LuArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
             </motion.button>
-            
+
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -90,7 +89,7 @@ const HeroSection = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{
                   delay: 0.8 + index * 0.1,
-                  duration: 0.5
+                  duration: 0.5,
                 }}
                 className="text-center"
               >

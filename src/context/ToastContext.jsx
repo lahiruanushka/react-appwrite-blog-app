@@ -1,32 +1,30 @@
-import React, { createContext, useState, useContext, useCallback } from 'react';
-import { ToastMessage } from '../components';
-
+import React, { createContext, useState, useContext, useCallback } from "react";
+import { ToastMessage } from "../components";
 
 const ToastContext = createContext();
 
 export const useToast = () => useContext(ToastContext);
 
 export const ToastProvider = ({ children }) => {
-  const [toast, setToast] = useState(null);
+  const [toast, setToast] = useState({ show: false, message: "", icon: null });
 
-  const showToast = useCallback((message, type) => {
-    setToast({ message, type });
+  const showToast = useCallback((message, icon) => {
+    setToast({ show: true, message, icon });
   }, []);
 
   const hideToast = useCallback(() => {
-    setToast(null);
-  }, []);
+    setToast({ ...toast, show: false });
+  }, [toast]);
 
   return (
     <ToastContext.Provider value={{ showToast, hideToast }}>
       {children}
-      {toast && (
-        <ToastMessage
-          message={toast.message}
-          type={toast.type}
-          onClose={hideToast}
-        />
-      )}
+      <ToastMessage
+        message={toast.message}
+        show={toast.show}
+        icon={toast.icon}
+        onClose={hideToast}
+      />
     </ToastContext.Provider>
   );
 };
