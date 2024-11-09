@@ -39,8 +39,6 @@ const UserProfilePage = () => {
             ...currentUser,
             ...userProfile,
           });
-
-          console.log("User:", { ...currentUser, ...userProfile });
     
           const userPosts = await postService.getUserPosts(currentUser.$id);
           setUserPosts(userPosts);
@@ -49,7 +47,7 @@ const UserProfilePage = () => {
         console.error("Error fetching user:", err);
         setError("Failed to load profile information.");
       } finally {
-        setLoading(false); // End loading after the fetch completes, error or not
+        setLoading(false); 
       }
     };
 

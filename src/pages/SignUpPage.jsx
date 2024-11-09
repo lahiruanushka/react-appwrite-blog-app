@@ -11,7 +11,6 @@ import {
 } from "react-icons/hi";
 import { Button, Input, AuthLayout } from "../components";
 import authService from "../services/authService";
-import { login } from "../store/userSlice";
 
 function SignUpPage() {
   const navigate = useNavigate();
