@@ -13,7 +13,7 @@ import {
   LuX,
   LuLogOut,
 } from "react-icons/lu";
-import authService from "../api/authService.js";
+import authService from "../services/authService.js";
 import { logout } from "../store/authSlice.js";
 
 const Header = () => {

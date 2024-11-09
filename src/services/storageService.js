@@ -1,15 +1,10 @@
+import client from "../conf/appwriteClient";
 import conf from "../conf/conf";
-import { Client, Storage, ID } from "appwrite";
+import { Storage, ID } from "appwrite";
 
 export class StorageService {
-  client = new Client();
-  bucket;
-
   constructor() {
-    this.client
-      .setEndpoint(conf.appwriteUrl)
-      .setProject(conf.appwriteProjectId);
-    this.bucket = new Storage(this.client);
+    this.bucket = new Storage(client);
   }
 
   // Upload a file to Appwrite storage

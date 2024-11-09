@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { FaChevronRight } from "react-icons/fa";
 import { format } from "date-fns";
 import parse from "html-react-parser";
-import storageService from "../api/storageService";
+import storageService from "../services/storageService";
 
 function PostCard({
   $createdAt,

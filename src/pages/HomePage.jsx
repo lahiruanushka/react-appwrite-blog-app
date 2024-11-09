@@ -8,7 +8,7 @@ import {
 } from "../components";
 
 import { Puff } from "react-loader-spinner";
-import postService from "../api/postService";
+import postService from "../services/postService";
 
 function Home() {
   const [posts, setPosts] = useState([]);

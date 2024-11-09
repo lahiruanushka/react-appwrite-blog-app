@@ -1,30 +1,9 @@
-import { Client, Account } from "appwrite"; 
-import conf from "../conf/conf";
+import { Account } from "appwrite";
+import client from "../conf/appwriteClient";
 
 class UserService {
   constructor() {
-    this.client = new Client()
-      .setEndpoint(conf.appwriteUrl)
-      .setProject(conf.appwriteProjectId); 
-    this.account = new Account(this.client); 
-  }
-
-  async createUser(email, password, name) {
-    try {
-      return await this.account.create(email, password, name);
-    } catch (error) {
-      console.error("UserService :: createUser() :: ", error);
-      throw error;
-    }
-  }
-  
-  async getCurrentUser() {
-    try {
-      return await this.account.get(); // Get currently logged-in user
-    } catch (error) {
-      console.error("UserService :: getUser() :: ", error);
-      throw error;
-    }
+    this.account = new Account(client);
   }
 
   async getUser(userId) {

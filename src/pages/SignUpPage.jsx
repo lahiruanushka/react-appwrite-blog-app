@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import authService from "../api/authService";
+import authService from "../services/authService";
 import { Link, useNavigate } from "react-router-dom";
-import { Input, Logo, Button } from "../components";
+import { Input, Button } from "../components";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { login } from "../store/authSlice";
@@ -34,7 +34,7 @@ function SignUpPage() {
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
       <div className="mx-auto w-full max-w-lg bg-white rounded-xl p-8 shadow-lg border border-gray-200">
         <div className="flex justify-center mb-6">
-          <Logo width="50%" className="max-w-[60px]" />
+          <img src="" alt="logo" />
         </div>
         <h2 className="text-center text-3xl font-semibold text-gray-800">
           Create your account

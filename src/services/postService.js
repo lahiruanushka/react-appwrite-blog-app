@@ -1,12 +1,10 @@
-import { Client, Databases, ID } from "appwrite";
+import { Databases, ID } from "appwrite";
 import conf from "../conf/conf";
+import client from "../conf/appwriteClient";
 
 class PostService {
   constructor() {
-    this.client = new Client()
-      .setEndpoint(conf.appwriteUrl) // Your API Endpoint
-      .setProject(conf.appwriteProjectId); // Your project ID
-    this.databases = new Databases(this.client);
+    this.databases = new Databases(client);
   }
 
   async createPost(data) {

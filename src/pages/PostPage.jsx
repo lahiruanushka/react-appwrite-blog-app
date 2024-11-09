@@ -5,9 +5,9 @@ import { useSelector } from "react-redux";
 import parse from "html-react-parser";
 import { FiEdit2, FiTrash2, FiShare2 } from "react-icons/fi";
 import { Puff } from "react-loader-spinner";
-import postService from "/src/api/postService";
-import storageService from "../api/storageService";
-import userService from "../api/userService";
+import postService from "/src/services/postService";
+import storageService from "../services/storageService";
+import userService from "../services/userService";
 import BlankProfileImage from "../assets/images/blank-profile-picture.png";
 
 const PostPage = () => {
@@ -77,7 +77,7 @@ const PostPage = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-[50vh]">
+      <div className="flex justify-center items-center h-[50vh] transition-colors duration-300 bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
         <Puff
           visible={true}
           height="80"

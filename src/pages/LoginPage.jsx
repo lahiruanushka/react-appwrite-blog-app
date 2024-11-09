@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import authService from "../api/authService";
-import { Input, Logo, Button } from "../components";
+import authService from "../services/authService";
+import { Input, Button } from "../components";
 import { login as authLogin } from "../store/authSlice";
 import { Dialog } from "@headlessui/react"; // Headless UI Modal
 
@@ -33,7 +33,7 @@ function LoginPage() {
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
       <div className="mx-auto w-full max-w-lg bg-white rounded-xl p-8 shadow-lg border border-gray-200">
         <div className="flex justify-center mb-6">
-          <Logo width="50%" className="max-w-[60px]" />
+          <img src="" alt="logo" />
         </div>
         <h2 className="text-center text-3xl font-semibold text-gray-800">
           Sign in to your account
