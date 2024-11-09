@@ -5,6 +5,7 @@ import {
   HeroSection,
   FeaturedPosts,
   CategoryFilter,
+  ErrorMessage,
 } from "../components";
 import { Puff } from "react-loader-spinner";
 import postService from "../services/postService";
@@ -90,17 +91,8 @@ function Home() {
   }
 
   if (error) {
-    return (
-      <motion.div
-        className="flex justify-center items-center h-screen"
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.9 }}
-      >
-        <h1 className="text-2xl font-bold text-red-500">{error}</h1>
-      </motion.div>
-    );
-  }
+    return <ErrorMessage title="Failed to fetch posts" error={error}  />;
+}
 
   return (
     <motion.div
@@ -160,7 +152,6 @@ function Home() {
           </div>
         </motion.div>
       </motion.div>
-    
 
       {/* Main Content */}
       <div className="container mx-auto px-4 space-y-16 py-8">
@@ -177,7 +168,7 @@ function Home() {
 
         <ScrollToTopButton />
       </div>
-      </motion.div>
+    </motion.div>
   );
 }
 

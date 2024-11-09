@@ -14,6 +14,7 @@ import PopularPosts from "./DiscoverStories";
 import CategoryFilter from "./CategoryFilter";
 import ScrollToTop from "./ScrollToTop";
 import ToastMessage from "./ToastMessage";
+import ErrorMessage from "./ErrorMessage";
 
 export {
   AuthLayout,
@@ -31,5 +32,6 @@ export {
   PopularPosts,
   CategoryFilter,
   ScrollToTop,
-  ToastMessage
+  ToastMessage,
+  ErrorMessage
 };
