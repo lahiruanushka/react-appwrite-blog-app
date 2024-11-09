@@ -4,7 +4,7 @@ import Footer from "./Footer";
 import Input from "./Input";
 import PostCard from "./PostCard";
 import PostForm from "./PostForm";
-import RTE from "./RTE";
+import { RTE } from "./RTE";
 import Select from "./Select";
 import Button from "./Button";
 import SearchBar from "./SearchBar";

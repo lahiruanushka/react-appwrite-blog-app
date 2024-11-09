@@ -2,17 +2,26 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { Dialog } from "@headlessui/react";
+import {
+  HiOutlineExclamationCircle,
+  HiOutlineLockClosed,
+  HiOutlineMail,
+} from "react-icons/hi";
+import { Button, Input, AuthLayout } from "../components";
 import authService from "../services/authService";
-import { Input, Button } from "../components";
 import { login as authLogin } from "../store/userSlice";
-import { Dialog } from "@headlessui/react"; // Headless UI Modal
 
 function LoginPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm();
   const [error, setError] = useState("");
-  const [isOpen, setIsOpen] = useState(false); // Modal state for error
+  const [isOpen, setIsOpen] = useState(false);
 
   const login = async (data) => {
     setError("");
@@ -25,70 +34,103 @@ function LoginPage() {
       }
     } catch (error) {
       setError(error.message);
-      setIsOpen(true); // Open the error modal on failure
+      setIsOpen(true);
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50">
-      <div className="mx-auto w-full max-w-lg bg-white rounded-xl p-8 shadow-lg border border-gray-200">
-        <div className="flex justify-center mb-6">
-          <img src="" alt="logo" />
+    <AuthLayout
+      title="Welcome back"
+      subtitle="Please enter your details to sign in"
+    >
+      <form onSubmit={handleSubmit(login)} className="space-y-6">
+        <Input
+          label="Email address"
+          type="email"
+          placeholder="Enter your email"
+          error={errors.email?.message}
+          icon={HiOutlineMail}
+          {...register("email", {
+            required: "Email is required",
+            pattern: {
+              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+              message: "Invalid email address",
+            },
+          })}
+        />
+        <Input
+          label="Password"
+          type="password"
+          placeholder="••••••••"
+          error={errors.password?.message}
+          icon={HiOutlineLockClosed}
+          {...register("password", {
+            required: "Password is required",
+            minLength: {
+              value: 6,
+              message: "Password must be at least 6 characters",
+            },
+          })}
+        />
+
+        <div className="flex items-center justify-between text-sm">
+          <label className="flex items-center">
+            <input
+              type="checkbox"
+              className="w-4 h-4 rounded text-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600"
+            />
+            <span className="ml-2 text-gray-600 dark:text-gray-400">
+              Remember me
+            </span>
+          </label>
+          <Link
+            to="/forgot-password"
+            className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300"
+          >
+            Forgot password?
+          </Link>
         </div>
-        <h2 className="text-center text-3xl font-semibold text-gray-800">
-          Sign in to your account
-        </h2>
-        <p className="mt-2 text-center text-base text-gray-600">
-          Don&apos;t have an account?{" "}
-          <Link to="/signup" className="text-blue-600 hover:underline">
-            Sign Up
+
+        <Button type="submit" isLoading={isSubmitting}>
+          Sign in
+        </Button>
+
+        <p className="text-center text-gray-600 dark:text-gray-400">
+          Don't have an account?{" "}
+          <Link
+            to="/signup"
+            className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300"
+          >
+            Sign up
           </Link>
         </p>
-        <form onSubmit={handleSubmit(login)} className="mt-8 space-y-6">
-          <div className="space-y-4">
-            <Input
-              label="Email"
-              placeholder="Email Address"
-              type="email"
-              {...register("email", { required: true })}
-            />
-            <Input
-              label="Password"
-              type="password"
-              placeholder="Password"
-              {...register("password", { required: true })}
-            />
-          </div>
-          <Button type="submit" className="w-full">
-            Sign in{" "}
-          </Button>
-        </form>
-        {error && <p className="mt-4 text-center text-red-600">{error}</p>}
-      </div>
+      </form>
 
-      {/* Error Modal using Headless UI Dialog */}
-      <Dialog open={isOpen} onClose={() => setIsOpen(false)}>
-        <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
-        <div className="fixed inset-0 flex items-center justify-center z-50">
-          <Dialog.Panel className="bg-white rounded-lg p-6 shadow-lg max-w-sm w-full">
-            <Dialog.Title className="text-lg font-semibold text-red-600">
-              Error
-            </Dialog.Title>
-            <Dialog.Description className="mt-2 text-sm text-gray-600">
+      <Dialog
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+        className="relative z-50"
+      >
+        <div
+          className="fixed inset-0 bg-black/30 backdrop-blur-sm"
+          aria-hidden="true"
+        />
+        <div className="fixed inset-0 flex items-center justify-center p-4">
+          <Dialog.Panel className="mx-auto max-w-sm rounded-2xl bg-white dark:bg-gray-800 p-6 shadow-xl">
+            <div className="flex items-center text-red-500 mb-4">
+              <HiOutlineExclamationCircle className="h-6 w-6 mr-2" />
+              <Dialog.Title className="text-lg font-semibold">
+                Error
+              </Dialog.Title>
+            </div>
+            <Dialog.Description className="text-gray-600 dark:text-gray-400 mb-4">
               {error || "An unexpected error occurred. Please try again."}
             </Dialog.Description>
-            <div className="mt-4 flex justify-end">
-              <button
-                onClick={() => setIsOpen(false)}
-                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-200"
-              >
-                Close
-              </button>
-            </div>
+            <Button onClick={() => setIsOpen(false)}>Close</Button>
           </Dialog.Panel>
         </div>
       </Dialog>
-    </div>
+    </AuthLayout>
   );
 }
 

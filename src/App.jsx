@@ -37,9 +37,6 @@ function App() {
   return (
     <Router>
       <Header />
-      {/* Scroll to top on every route change */}
-      <ScrollToTop />
-      
       <Routes>
         {/* User-Facing Routes */}
         <Route path="/" element={<HomePage />} />
@@ -56,7 +53,7 @@ function App() {
 
         {/* Auth Routes */}
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/sign-up" element={<SignUpPage />} />
+        <Route path="/signup" element={<SignUpPage />} />
 
         {/* Admin Routes */}
         {/* <Route path="/admin" element={<AdminDashboard />} />
@@ -71,6 +68,10 @@ function App() {
         {/* Redirect unknown routes */}
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
+
+      {/* Scroll to top on every route change */}
+      <ScrollToTop />
+
       <Footer />
     </Router>
   );

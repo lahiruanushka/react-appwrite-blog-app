@@ -23,7 +23,7 @@ function EditPostPage() {
   }, [slug, navigate]);
 
   return (
-    <div className="py-6">
+    <div className="min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900 transition-colors duration-300 mx-auto">
       <PostForm post={post} />
     </div>
   );
