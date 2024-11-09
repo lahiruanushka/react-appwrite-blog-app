@@ -27,12 +27,14 @@ function SignUpPage() {
   const create = async (data) => {
     setError("");
     try {
-      const userData = await authService.createAccount(data);
-      if (userData) {
-        const currentUser = await authService.getCurrentUser();
-        if (currentUser) dispatch(login({ userData: currentUser }));
-        navigate("/");
-      }
+      const { fullname, email, password } = data;
+      const session = await authService.createAccount({
+        email,
+        password,
+        name: fullname, // Pass fullname as name
+      });
+      console.log("User signed up and logged in:", session);
+      navigate("/");
     } catch (error) {
       setError(error.message);
       setIsOpen(true);

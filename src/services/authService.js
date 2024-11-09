@@ -1,5 +1,7 @@
-import {  Account, ID } from "appwrite";
+import { Account, ID } from "appwrite";
 import client from "../conf/appwriteClient";
+import userService from "./userService"; // Import UserService
+import { createUsername } from "../utils/usernameUtils";
 
 export class AuthService {
   constructor() {
@@ -14,8 +16,19 @@ export class AuthService {
         password,
         name
       );
+
+      const username = createUsername(name);
+
       if (userAccount) {
-        return this.login({ email, password });
+        // Log in the user after account creation
+        await this.login({ email, password });
+
+        // Now that the user is logged in, get the current user
+        const currentUser = await this.getCurrentUser();
+
+        // Create profile for the user
+        await userService.createUserProfile(currentUser.$id, username);
+        return currentUser;
       } else {
         return userAccount;
       }
@@ -39,7 +52,7 @@ export class AuthService {
       return await this.account.get();
     } catch (error) {
       console.error("Error in getCurrentUser:", error);
-      return null;
+      throw error;
     }
   }
 
@@ -48,10 +61,10 @@ export class AuthService {
       await this.account.deleteSessions();
     } catch (error) {
       console.error("Error in logout:", error);
+      throw error;
     }
   }
 }
 
 const authService = new AuthService();
-
 export default authService;

@@ -1,4 +1,4 @@
-import { Databases, ID } from "appwrite";
+import { Databases, ID, Query } from "appwrite";
 import conf from "../conf/conf";
 import client from "../conf/appwriteClient";
 
@@ -70,6 +70,26 @@ class PostService {
       );
     } catch (error) {
       console.error("PostService :: getPosts() :: ", error);
+      throw error;
+    }
+  }
+
+  async getUserPosts(userId) {
+    if (!userId) {
+      throw new Error("User ID must be provided");
+    }
+
+    const queries = [Query.equal("userId", userId)];
+
+    try {
+      const response = await this.databases.listDocuments(
+        conf.appwriteDatabaseId,
+        conf.appwriteCollectionId,
+        queries
+      );
+      return response.documents; // Return the array of documents
+    } catch (error) {
+      console.error("PostService :: getUserPosts() :: ", error);
       throw error;
     }
   }

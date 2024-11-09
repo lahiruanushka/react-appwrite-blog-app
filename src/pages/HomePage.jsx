@@ -6,6 +6,7 @@ import {
   FeaturedPosts,
   CategoryFilter,
   ErrorMessage,
+  Loading,
 } from "../components";
 import { Puff } from "react-loader-spinner";
 import postService from "../services/postService";
@@ -72,27 +73,12 @@ function Home() {
   ];
 
   if (loading) {
-    return (
-      <motion.div
-        className="flex justify-center items-center h-screen bg-gray-100 dark:bg-gray-900"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-      >
-        <Puff
-          visible={true}
-          height="80"
-          width="80"
-          color="#8a2be2"
-          ariaLabel="puff-loading"
-        />
-      </motion.div>
-    );
+    return <Loading loading={true} />;
   }
 
   if (error) {
-    return <ErrorMessage title="Failed to fetch posts" error={error}  />;
-}
+    return <ErrorMessage title="Failed to fetch posts" error={error} />;
+  }
 
   return (
     <motion.div

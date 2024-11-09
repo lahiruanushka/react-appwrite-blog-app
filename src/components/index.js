@@ -15,6 +15,7 @@ import CategoryFilter from "./CategoryFilter";
 import ScrollToTop from "./ScrollToTop";
 import ToastMessage from "./ToastMessage";
 import ErrorMessage from "./ErrorMessage";
+import Loading from "./Loading";
 
 export {
   AuthLayout,
@@ -33,5 +34,6 @@ export {
   CategoryFilter,
   ScrollToTop,
   ToastMessage,
-  ErrorMessage
+  ErrorMessage,
+  Loading
 };
