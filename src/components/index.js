@@ -12,6 +12,7 @@ import HeroSection from "./HeroSection";
 import FeaturedPosts from "./FeaturedPosts";
 import PopularPosts from "./PopularPosts";
 import CategoryFilter from "./CategoryFilter";
+import ScrollToTop from "./ScrollToTop";
 
 export {
   AuthLayout,
@@ -28,4 +29,5 @@ export {
   FeaturedPosts,
   PopularPosts,
   CategoryFilter,
+  ScrollToTop,
 };
