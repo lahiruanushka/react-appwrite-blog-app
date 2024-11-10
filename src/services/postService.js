@@ -11,7 +11,7 @@ class PostService {
     try {
       return await this.databases.createDocument(
         conf.appwriteDatabaseId,
-        conf.appwriteCollectionId,
+        conf.appwritePostCollectionId,
         ID.unique(), // Use a unique ID for the document
         data
       );
@@ -25,7 +25,7 @@ class PostService {
     try {
       return await this.databases.getDocument(
         conf.appwriteDatabaseId,
-        conf.appwriteCollectionId,
+        conf.appwritePostCollectionId,
         documentId
       );
     } catch (error) {
@@ -38,7 +38,7 @@ class PostService {
     try {
       return await this.databases.updateDocument(
         conf.appwriteDatabaseId,
-        conf.appwriteCollectionId,
+        conf.appwritePostCollectionId,
         documentId,
         data
       );
@@ -52,7 +52,7 @@ class PostService {
     try {
       return await this.databases.deleteDocument(
         conf.appwriteDatabaseId,
-        conf.appwriteCollectionId,
+        conf.appwritePostCollectionId,
         documentId
       );
     } catch (error) {
@@ -65,7 +65,7 @@ class PostService {
     try {
       return await this.databases.listDocuments(
         conf.appwriteDatabaseId,
-        conf.appwriteCollectionId,
+        conf.appwritePostCollectionId,
         queries
       );
     } catch (error) {
@@ -84,7 +84,7 @@ class PostService {
     try {
       const response = await this.databases.listDocuments(
         conf.appwriteDatabaseId,
-        conf.appwriteCollectionId,
+        conf.appwritePostCollectionId,
         queries
       );
       return response.documents; // Return the array of documents

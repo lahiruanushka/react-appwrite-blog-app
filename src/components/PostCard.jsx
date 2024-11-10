@@ -4,13 +4,9 @@ import { motion } from "framer-motion";
 import { format } from "date-fns";
 import parse from "html-react-parser";
 import storageService from "../services/storageService";
-import {
-  LuBookmark,
-  LuBookMarked,
-  LuCalendar,
-  LuClock,
-} from "react-icons/lu";
+import { LuBookmark, LuBookMarked, LuCalendar, LuClock } from "react-icons/lu";
 import { useToast } from "../context/ToastContext";
+import bookmarkService from "../services/bookmarkService";
 
 const PostCard = ({
   $createdAt,
@@ -19,7 +15,7 @@ const PostCard = ({
   content,
   featuredImage,
   title,
-  userid,
+  userId,
   $slug,
 }) => {
   const [previewUrl, setPreviewUrl] = useState("");
@@ -34,7 +30,7 @@ const PostCard = ({
         try {
           const url = await storageService.getFilePreview(featuredImage);
           setPreviewUrl(url);
-          console.log(previewUrl)
+          console.log(previewUrl);
         } catch (error) {
           console.error("Error fetching image preview:", error);
         }
@@ -46,20 +42,41 @@ const PostCard = ({
   const handleBookmark = async (e) => {
     e.preventDefault();
 
-    if (isBookmarked) {
-      setIsBookmarked(false);
-      showToast(
-        "Remove from Bookmarks!",
-        <LuBookmark className="h-6 w-6 text-blue-400" />
-      );
-    } else {
-      setIsBookmarked(true);
-      showToast(
-        "Added to Bookmarks!",
-        <LuBookmark className="h-6 w-6 text-blue-400" />
-      );
+    try {
+      if (isBookmarked) {
+        const bookmarks = await bookmarkService.getUserBookmarks(userId);
+        const bookmarkToRemove = bookmarks.find((b) => b.postId === $id);
+
+        if (bookmarkToRemove) {
+          await bookmarkService.removeBookmark(bookmarkToRemove.$id);
+          setIsBookmarked(false);
+          showToast(
+            "Removed from Bookmarks!",
+            <LuBookmark className="h-6 w-6 text-blue-400" />
+          );
+        }
+      } else {
+        await bookmarkService.addBookmark(userId, $id);
+        setIsBookmarked(true);
+        showToast(
+          "Added to Bookmarks!",
+          <LuBookmark className="h-6 w-6 text-blue-400" />
+        );
+      }
+    } catch (error) {
+      console.error("Error handling bookmark:", error);
+      showToast("An error occurred while updating bookmarks.");
     }
   };
+
+  useEffect(() => {
+    const checkBookmarkStatus = async () => {
+      const status = await bookmarkService.isPostBookmarked(userId, $id);
+      setIsBookmarked(status);
+    };
+
+    checkBookmarkStatus();
+  }, [$id, userId]);
 
   return (
     <motion.div

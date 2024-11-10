@@ -13,6 +13,7 @@ import { FiEdit2 } from "react-icons/fi";
 import BlankProfilePicture from "../assets/images/blank-profile-picture.png";
 import { Puff } from "react-loader-spinner";
 import { useToast } from "../context/ToastContext";
+import bookmarkService from "../services/bookmarkService";
 
 const PostPage = () => {
   const [post, setPost] = useState(null);
@@ -77,21 +78,44 @@ const PostPage = () => {
     );
   };
 
-  const handleBookmark = async () => {
-    if (isBookmarked) {
-      setIsBookmarked(false);
-      showToast(
-        "Remove from Bookmarks!",
-        <LuBookmark className="h-6 w-6 text-blue-400" />
-      );
-    } else {
-      setIsBookmarked(true);
-      showToast(
-        "Added to Bookmarks!",
-        <LuBookmark className="h-6 w-6 text-blue-400" />
-      );
+  const handleBookmark = async (e) => {
+    e.preventDefault();
+
+    try {
+      if (isBookmarked) {
+        const bookmarks = await bookmarkService.getUserBookmarks(userData.$id);
+        const bookmarkToRemove = bookmarks.find((b) => b.postId === postId);
+
+        if (bookmarkToRemove) {
+          await bookmarkService.removeBookmark(bookmarkToRemove.$id);
+          setIsBookmarked(false);
+          showToast(
+            "Removed from Bookmarks!",
+            <LuBookmark className="h-6 w-6 text-blue-400" />
+          );
+        }
+      } else {
+        await bookmarkService.addBookmark(userData.$id, postId);
+        setIsBookmarked(true);
+        showToast(
+          "Added to Bookmarks!",
+          <LuBookmark className="h-6 w-6 text-blue-400" />
+        );
+      }
+    } catch (error) {
+      console.error("Error handling bookmark:", error);
+      showToast("An error occurred while updating bookmarks.");
     }
   };
+
+  useEffect(() => {
+    const checkBookmarkStatus = async () => {
+      const status = await bookmarkService.isPostBookmarked(userId, postId);
+      setIsBookmarked(status);
+    };
+
+    checkBookmarkStatus();
+  }, [postId, userData.$id]);
 
   const deletePost = async () => {
     try {
