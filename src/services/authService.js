@@ -64,6 +64,16 @@ export class AuthService {
       throw error;
     }
   }
+
+  async checkAuth() {
+    try {
+      // Attempt to get the current user
+      return await this.account.get(); // This will throw if not authenticated
+    } catch (error) {
+      console.error("User is not authenticated:", error);
+      return null; // Return null if not authenticated
+    }
+  }
 }
 
 const authService = new AuthService();

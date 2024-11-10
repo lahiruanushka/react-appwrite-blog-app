@@ -16,7 +16,7 @@ import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignupPage";
 import BookmarksPage from "./pages/BookmarksPage";
 import NotFoundPage from "./pages/NotFoundPage";
-import { Header, Footer, ScrollToTop, AuthRoute,PrivateRoute  } from "./components";
+import { Header, Footer, ScrollToTop, AuthRoute,PrivateRoute, AuthCheck  } from "./components";
 
 function App() {
   const theme = useSelector((state) => state.theme.theme);
@@ -29,6 +29,8 @@ function App() {
     <Router>
       <Header />
       <ToastProvider>
+      <AuthCheck />
+
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<HomePage />} />

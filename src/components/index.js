@@ -19,6 +19,7 @@ import Loading from "./Loading";
 import LoginPrompt from "./LoginPrompt";
 import PrivateRoute from "./PrivateRoute";
 import AuthRoute from "./AuthRoute";
+import AuthCheck from "./AuthCheck";
 
 export {
   AuthLayout,
@@ -41,5 +42,6 @@ export {
   Loading,
   LoginPrompt,
   PrivateRoute,
-  AuthRoute
+  AuthRoute,
+  AuthCheck
 };
