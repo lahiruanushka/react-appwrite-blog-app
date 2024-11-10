@@ -84,6 +84,7 @@ const PostPage = () => {
     try {
       if (isBookmarked) {
         const bookmarks = await bookmarkService.getUserBookmarks(userData.$id);
+        
         const bookmarkToRemove = bookmarks.find((b) => b.postId === postId);
 
         if (bookmarkToRemove) {
@@ -110,7 +111,10 @@ const PostPage = () => {
 
   useEffect(() => {
     const checkBookmarkStatus = async () => {
-      const status = await bookmarkService.isPostBookmarked(userId, postId);
+      const status = await bookmarkService.isPostBookmarked(
+        userData.$id,
+        postId
+      );
       setIsBookmarked(status);
     };
 

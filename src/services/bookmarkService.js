@@ -1,6 +1,7 @@
 import { Databases, ID, Query } from "appwrite";
 import conf from "../conf/conf";
 import client from "../conf/appwriteClient";
+import postService from "./postService";
 
 class BookmarkService {
   constructor() {
@@ -82,6 +83,33 @@ class BookmarkService {
       return response.documents.length > 0; // Returns true if there is at least one bookmark for the post
     } catch (error) {
       console.error("BookmarkService :: isPostBookmarked() :: ", error);
+      throw error;
+    }
+  }
+
+  // Get all bookmarked posts for a user
+  async getAllBookmarkedPosts(userId) {
+    if (!userId) {
+      throw new Error("User ID must be provided");
+    }
+
+    try {
+      // Retrieve all bookmarks for the user
+      const bookmarks = await this.getUserBookmarks(userId);
+
+      // Extract post IDs from the bookmarks
+      const postIds = bookmarks.map((bookmark) => bookmark.postId);
+
+      // Fetch each post's details
+      const bookmarkedPosts = [];
+      for (const postId of postIds) {
+        const post = await postService.getPost(postId); // Fetch each post individually
+        bookmarkedPosts.push(post);
+      }
+
+      return bookmarkedPosts; // Return the array of bookmarked post documents
+    } catch (error) {
+      console.error("BookmarkService :: getAllBookmarkedPosts() :: ", error);
       throw error;
     }
   }

@@ -7,6 +7,7 @@ import storageService from "../services/storageService";
 import { LuBookmark, LuBookMarked, LuCalendar, LuClock } from "react-icons/lu";
 import { useToast } from "../context/ToastContext";
 import bookmarkService from "../services/bookmarkService";
+import { useSelector } from "react-redux";
 
 const PostCard = ({
   $createdAt,
@@ -22,6 +23,7 @@ const PostCard = ({
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
 
+  const userData = useSelector((state) => state.user.userData);
   const { showToast } = useToast();
 
   useEffect(() => {
@@ -44,7 +46,7 @@ const PostCard = ({
 
     try {
       if (isBookmarked) {
-        const bookmarks = await bookmarkService.getUserBookmarks(userId);
+        const bookmarks = await bookmarkService.getUserBookmarks(userData.$id);
         const bookmarkToRemove = bookmarks.find((b) => b.postId === $id);
 
         if (bookmarkToRemove) {
@@ -56,7 +58,7 @@ const PostCard = ({
           );
         }
       } else {
-        await bookmarkService.addBookmark(userId, $id);
+        await bookmarkService.addBookmark(userData.$id, $id);
         setIsBookmarked(true);
         showToast(
           "Added to Bookmarks!",
@@ -71,12 +73,12 @@ const PostCard = ({
 
   useEffect(() => {
     const checkBookmarkStatus = async () => {
-      const status = await bookmarkService.isPostBookmarked(userId, $id);
+      const status = await bookmarkService.isPostBookmarked(userData.$id, $id);
       setIsBookmarked(status);
     };
 
     checkBookmarkStatus();
-  }, [$id, userId]);
+  }, [$id, userData.$id]);
 
   return (
     <motion.div
