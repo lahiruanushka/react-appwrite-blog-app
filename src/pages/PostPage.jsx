@@ -297,7 +297,7 @@ const PostPage = () => {
                     />
                     <div>
                       <p className="font-medium text-white group-hover:text-purple-200 transition-colors">
-                        {user.name}
+                        {user.fullName}
                       </p>
                       <p className="text-sm text-gray-300">@{user.username}</p>
                     </div>

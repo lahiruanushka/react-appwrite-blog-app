@@ -25,15 +25,15 @@ class UserService {
     }
   }
 
-  async createUserProfile(userId, username) {
-    if (!userId || !username) {
-      throw new Error("User ID and username must be provided");
+  async createUserProfile(userId, username, fullName) {
+    if (!userId || !username || !fullName) {
+      throw new Error("User ID, Full Name and username must be provided");
     }
 
     const userProfileData = {
       userId: userId,
       username: username,
-      // Add any additional fields here if necessary
+      fullName: fullName,
     };
 
     try {

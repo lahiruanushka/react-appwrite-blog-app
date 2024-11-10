@@ -27,7 +27,7 @@ export class AuthService {
         const currentUser = await this.getCurrentUser();
 
         // Create profile for the user
-        await userService.createUserProfile(currentUser.$id, username);
+        await userService.createUserProfile(currentUser.$id, username, name);
         return currentUser;
       } else {
         return userAccount;
