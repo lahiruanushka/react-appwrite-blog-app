@@ -46,8 +46,8 @@ function App() {
           <Route path="/author/:authorId" element={<PrivateRoute element={<AuthorPage />} />} />
 
           {/* Auth Routes */}
-          <Route path="/login" element={<AuthRoute element={<LoginPage />} />} />
-          <Route path="/signup" element={<AuthRoute element={<SignUpPage />} />} />
+          <Route path="/sign-in" element={<AuthRoute element={<LoginPage />} />} />
+          <Route path="/sign-up" element={<AuthRoute element={<SignUpPage />} />} />
 
           {/* Redirect unknown routes */}
           <Route path="*" element={<NotFoundPage />} />

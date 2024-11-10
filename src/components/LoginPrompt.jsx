@@ -74,12 +74,12 @@ const LoginPrompt = ({ isOpen = true, onClose = () => {} }) => {
   // Navigation handlers
   const handleSignIn = () => {
     onClose();
-    navigate("/login");
+    navigate("/sign-in");
   };
 
   const handleRegister = () => {
     onClose();
-    navigate("/register");
+    navigate("/sign-up");
   };
 
   return (
