@@ -159,6 +159,16 @@ const PostPage = () => {
     }
   };
 
+  const handleAuthorClick = (userId) => {
+
+    if (!isAuthenticated) {
+      setShowLoginPrompt(true);
+      return;
+    }
+
+    navigate(`/author/${userId}`);
+  }
+
   if (loading) {
     return (
       <motion.div
@@ -286,9 +296,9 @@ const PostPage = () => {
                   transition={{ delay: 0.1 }}
                   className="flex items-center space-x-6"
                 >
-                  <Link
-                    to={`/author/${user.$id}`}
-                    className="flex items-center space-x-3 group"
+                  <div
+                    onClick={() => {handleAuthorClick(user.$id)}}
+                    className="flex items-center space-x-3 group cursor-pointer"
                   >
                     <img
                       src={BlankProfilePicture}
@@ -301,7 +311,7 @@ const PostPage = () => {
                       </p>
                       <p className="text-sm text-gray-300">@{user.username}</p>
                     </div>
-                  </Link>
+                  </div>
 
                   <div className="flex items-center text-gray-300">
                     <LuClock className="w-4 h-4 mr-2" />
