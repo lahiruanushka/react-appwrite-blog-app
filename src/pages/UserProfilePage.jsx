@@ -2,18 +2,10 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import authService from "../services/authService";
-import {
-  LuCalendar,
-  LuLoader,
-  LuLogOut,
-  LuMail,
-  LuTrash2,
-  LuUser,
-  LuUser2,
-} from "react-icons/lu";
+import { LuCalendar, LuLogOut, LuMail, LuTrash2, LuUser } from "react-icons/lu";
 import { ErrorMessage, Loading, PostCard } from "../components";
 import postService from "../services/postService";
-import { logout } from "../store/userSlice";
+import { logout } from "../store/authSlice";
 import { useDispatch } from "react-redux";
 import userService from "../services/userService";
 
@@ -162,7 +154,7 @@ const UserProfilePage = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={handleSignOut}
-              className="inline-flex items-center px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+              className="inline-flex items-center px-12 py-3 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
             >
               <LuLogOut className="w-5 h-5 mr-2" />
               Sign Out

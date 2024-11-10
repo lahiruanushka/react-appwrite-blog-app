@@ -16,6 +16,9 @@ import ScrollToTop from "./ScrollToTop";
 import ToastMessage from "./ToastMessage";
 import ErrorMessage from "./ErrorMessage";
 import Loading from "./Loading";
+import LoginPrompt from "./LoginPrompt";
+import PrivateRoute from "./PrivateRoute";
+import AuthRoute from "./AuthRoute";
 
 export {
   AuthLayout,
@@ -35,5 +38,8 @@ export {
   ScrollToTop,
   ToastMessage,
   ErrorMessage,
-  Loading
+  Loading,
+  LoginPrompt,
+  PrivateRoute,
+  AuthRoute
 };

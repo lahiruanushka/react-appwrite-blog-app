@@ -10,7 +10,7 @@ import {
 } from "react-icons/hi";
 import { Button, Input, AuthLayout } from "../components";
 import authService from "../services/authService";
-import { login as authLogin } from "../store/userSlice";
+import { login as authLogin } from "../store/authSlice";
 
 function LoginPage() {
   const navigate = useNavigate();

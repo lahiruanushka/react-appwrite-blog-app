@@ -14,12 +14,12 @@ import {
   LuLogOut,
 } from "react-icons/lu";
 import authService from "../services/authService.js";
-import { logout } from "../store/userSlice.js";
+import { logout } from "../store/authSlice.js";
 import { toggleTheme } from "../store/themeSlice.js";
 
 const Header = () => {
   const theme = useSelector((state) => state.theme.theme);
-  const authStatus = useSelector((state) => state.user.status);
+  const authStatus = useSelector((state) => state.user.isAuthenticated);
   const dispatch = useDispatch();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -145,7 +145,7 @@ const Header = () => {
                 onClick={handleThemeToggle}
                 className="p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors duration-200"
               >
-                {theme === 'light' ? (
+                {theme === "light" ? (
                   <LuSun className="w-5 h-5" />
                 ) : (
                   <LuMoon className="w-5 h-5" />
