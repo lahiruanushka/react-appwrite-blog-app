@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Menu, Transition } from "@headlessui/react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   LuHome,
   LuPencil,
@@ -22,6 +22,7 @@ const Header = () => {
   const authStatus = useSelector((state) => state.user.isAuthenticated);
   const dispatch = useDispatch();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   const navItems = [
     { name: "Home", href: "/", icon: LuHome },
@@ -37,6 +38,7 @@ const Header = () => {
   const logoutHandler = () => {
     authService.logout().then(() => {
       dispatch(logout());
+      navigate("/sign-in");
     });
   };
 
@@ -165,7 +167,7 @@ const Header = () => {
                 </button>
               ) : (
                 <Link
-                  to="/login"
+                  to="/sign-in"
                   className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-full transition-colors duration-200"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >

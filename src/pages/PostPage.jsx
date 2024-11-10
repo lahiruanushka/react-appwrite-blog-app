@@ -2,19 +2,25 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import parse from "html-react-parser";
-import { motion } from "framer-motion";
-import { Dialog, Transition } from "@headlessui/react";
-import { Fragment } from "react";
-import postService from "../services/postService";
-import userService from "../services/userService";
-import storageService from "../services/storageService";
-import { LuBookmark, LuBookMarked, LuShare2, LuTrash2 } from "react-icons/lu";
+import { motion, AnimatePresence } from "framer-motion";
+import { Dialog } from "@headlessui/react";
+import {
+  LuBookmark,
+  LuBookMarked,
+  LuShare2,
+  LuTrash2,
+  LuClock,
+  LuUser,
+} from "react-icons/lu";
 import { FiEdit2 } from "react-icons/fi";
 import BlankProfilePicture from "../assets/images/blank-profile-picture.png";
-import { Puff } from "react-loader-spinner";
 import { useToast } from "../context/ToastContext";
-import bookmarkService from "../services/bookmarkService";
 import { LoginPrompt } from "../components";
+import postService from "../services/postService";
+import storageService from "../services/storageService";
+import userService from "../services/userService";
+import bookmarkService from "../services/bookmarkService";
+import { Puff } from "react-loader-spinner";
 
 const PostPage = () => {
   const [post, setPost] = useState(null);
@@ -25,18 +31,27 @@ const PostPage = () => {
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   const { postId } = useParams();
   const navigate = useNavigate();
   const userData = useSelector((state) => state.user.userData);
-  const isAuthor = post && userData ? post.userid === userData.$id : false;
+  const isAuthor = post && userData ? post.userId === userData.$id : false;
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
-
   const { showToast } = useToast();
+
+  // Handle scroll effects
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 100);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     fetchPostAndImage();
-  }, [postId, navigate]);
+  }, [postId]);
 
   const fetchPostAndImage = async () => {
     try {
@@ -45,7 +60,7 @@ const PostPage = () => {
         const fetchedPost = await postService.getPost(postId);
         if (fetchedPost) {
           setPost(fetchedPost);
-          fetchPostAuthor(fetchedPost.userid);
+          fetchPostAuthor(fetchedPost.userId);
           const url = await storageService.getFilePreview(
             fetchedPost.featuredImage
           );
@@ -64,7 +79,7 @@ const PostPage = () => {
   const fetchPostAuthor = async (userId) => {
     try {
       if (userId) {
-        const fetchedUser = await userService.getUser(userId);
+        const fetchedUser = await userService.getUserProfile(userId);
         if (fetchedUser) {
           setUser(fetchedUser);
         }
@@ -166,16 +181,16 @@ const PostPage = () => {
   if (!post) {
     return (
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="flex flex-col items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-4"
       >
-        <h2 className="text-2xl font-bold text-gray-700 dark:text-gray-200">
+        <h2 className="text-3xl font-bold text-gray-700 dark:text-gray-200 mb-4">
           Post not found
         </h2>
         <Link
           to="/"
-          className="mt-4 text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
+          className="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
         >
           Return home
         </Link>
@@ -185,50 +200,25 @@ const PostPage = () => {
 
   return (
     <>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4"
-      >
-        <article className="max-w-4xl mx-auto">
+      {/* Floating Action Bar */}
+      <AnimatePresence>
+        {isScrolled && (
           <motion.div
-            initial={{ y: 20 }}
+            initial={{ y: -100 }}
             animate={{ y: 0 }}
-            className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden"
+            exit={{ y: -100 }}
+            className="fixed top-0 left-0 right-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg z-50 shadow-lg"
           >
-            {/* Hero Image with Parallax Effect */}
-            <motion.div
-              className="relative h-[500px] w-full overflow-hidden"
-              whileHover={{ scale: 1.02 }}
-              transition={{ duration: 0.3 }}
-            >
-              {/* Image Container */}
-              <div className="relative aspect-[16/10] overflow-hidden bg-gray-100 dark:bg-gray-700">
-                {imageUrl ? (
-                  <motion.img
-                    src={imageUrl}
-                    alt={post.title}
-                    onLoad={() => setImageLoaded(true)}
-                    initial={{ opacity: 0, scale: 1.1 }}
-                    animate={{
-                      opacity: imageLoaded ? 1 : 0,
-                      scale: imageLoaded ? 1 : 1.1,
-                    }}
-                    transition={{ duration: 0.3 }}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-16 h-16 rounded-full border-4 border-gray-200 dark:border-gray-600 border-t-purple-500 animate-spin" />
-                  </div>
-                )}
-
-                {/* Bookmark Button */}
+            <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-gray-800 dark:text-white truncate max-w-md">
+                {post.title}
+              </h2>
+              <div className="flex items-center space-x-3">
                 <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                   onClick={handleBookmark}
-                  className="absolute top-4 right-4 p-2 rounded-full bg-white/90 dark:bg-gray-800/90 shadow-lg backdrop-blur-sm"
+                  className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
                 >
                   <LuBookMarked
                     className={`w-5 h-5 ${
@@ -238,168 +228,193 @@ const PostPage = () => {
                     }`}
                   />
                 </motion.button>
-              </div>
-
-              {isAuthor && (
-                <div className="absolute top-4 right-4 flex gap-2">
-                  <motion.div whileHover={{ scale: 1.1 }}>
-                    <Link
-                      to={`/edit-post/${post.$id}`}
-                      className="p-3 bg-white/90 dark:bg-gray-700/90 rounded-full shadow-lg hover:bg-white dark:hover:bg-gray-600 transition-colors"
-                    >
-                      <FiEdit2 className="w-5 h-5 text-gray-600 dark:text-gray-200" />
-                    </Link>
-                  </motion.div>
-                  <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    onClick={() => setIsDeleteModalOpen(true)}
-                    className="p-3 bg-white/90 dark:bg-gray-700/90 rounded-full shadow-lg hover:bg-white dark:hover:bg-gray-600 transition-colors"
-                  >
-                    <LuTrash2 className="w-5 h-5 text-red-500" />
-                  </motion.button>
-                </div>
-              )}
-            </motion.div>
-
-            {/* Content */}
-            <div className="p-8">
-              {user && (
-                <motion.div
-                  initial={{ x: -20, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  className="flex items-center space-x-4 mb-8"
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleShare}
+                  className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
                 >
-                  <img
-                    src={BlankProfilePicture}
-                    alt={user.name}
-                    className="w-12 h-12 rounded-full object-cover ring-2 ring-purple-500"
-                  />
-                  <div>
-                    <Link
-                      to={`/author/${user.$id}`}
-                      className="font-semibold text-gray-800 dark:text-white hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
-                    >
-                      @{user.name}
-                    </Link>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      {new Date(post.created).toLocaleDateString()}
-                    </p>
-                  </div>
-                </motion.div>
-              )}
+                  <LuShare2 className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+                </motion.button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800"
+      >
+        {/* Hero Section */}
+        <div className="relative h-[50vh] md:h-[70vh] overflow-hidden">
+          {imageUrl && (
+            <motion.div
+              initial={{ scale: 1.1 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.5 }}
+              className="absolute inset-0"
+            >
+              <motion.img
+                src={imageUrl}
+                alt={post.title}
+                onLoad={() => setImageLoaded(true)}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: imageLoaded ? 1 : 0 }}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent to-gray-900/70" />
+            </motion.div>
+          )}
+
+          {/* Hero Content */}
+          <div className="absolute bottom-0 left-0 right-0 p-6 md:p-12">
+            <div className="max-w-4xl mx-auto">
               <motion.h1
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-8"
+                className="text-3xl md:text-5xl font-bold text-white mb-6"
               >
                 {post.title}
               </motion.h1>
 
-              <motion.div
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.2 }}
-                className="prose dark:prose-invert max-w-none dark:text-white browser-css"
-              >
-                {parse(post.content)}
-              </motion.div>
+              {user && (
+                <motion.div
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.1 }}
+                  className="flex items-center space-x-6"
+                >
+                  <Link
+                    to={`/author/${user.$id}`}
+                    className="flex items-center space-x-3 group"
+                  >
+                    <img
+                      src={BlankProfilePicture}
+                      alt={user.name}
+                      className="w-12 h-12 rounded-full ring-2 ring-purple-500 group-hover:ring-purple-400 transition-all"
+                    />
+                    <div>
+                      <p className="font-medium text-white group-hover:text-purple-200 transition-colors">
+                        {user.name}
+                      </p>
+                      <p className="text-sm text-gray-300">@{user.username}</p>
+                    </div>
+                  </Link>
+
+                  <div className="flex items-center text-gray-300">
+                    <LuClock className="w-4 h-4 mr-2" />
+                    <time dateTime={post.created}>
+                      {new Date(post.created).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </time>
+                  </div>
+                </motion.div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Main Content */}
+        <div className="max-w-4xl mx-auto px-4 py-12">
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-12"
+          >
+            <div className="prose dark:prose-invert max-w-none dark:text-white">
+              {parse(post.content)}
             </div>
 
-            {/* Share Button */}
+            {/* Action Buttons */}
             <motion.div
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.3 }}
-              className="p-8 border-t border-gray-200 dark:border-gray-700"
+              className="mt-12 space-y-4"
             >
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={handleShare}
-                className="inline-flex items-center px-6 py-3 rounded-lg bg-purple-600 text-white hover:bg-purple-700 transition-colors"
-              >
-                <LuShare2 className="w-5 h-5 mr-2" />
-                Share Post
-              </motion.button>
+              {isAuthor && (
+                <motion.div
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.4 }}
+                  className="flex flex-col sm:flex-row gap-4 mt-4"
+                >
+                  <Link
+                    to={`/edit-post/${post.$id}`}
+                    className="flex-1 inline-flex items-center justify-center px-6 py-3 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+                  >
+                    <FiEdit2 className="w-5 h-5 mr-2" />
+                    Edit Post
+                  </Link>
+                  <button
+                    onClick={() => setIsDeleteModalOpen(true)}
+                    className="flex-1 inline-flex items-center justify-center px-6 py-3 rounded-lg bg-red-600 text-white hover:bg-red-700 transition-colors"
+                  >
+                    <LuTrash2 className="w-5 h-5 mr-2" />
+                    Delete Post
+                  </button>
+                </motion.div>
+              )}
             </motion.div>
           </motion.div>
-        </article>
+        </div>
+      </motion.div>
 
-        {/* Delete Confirmation Modal */}
-        <Transition show={isDeleteModalOpen} as={Fragment}>
+      {/* Delete Confirmation Modal */}
+      <AnimatePresence>
+        {isDeleteModalOpen && (
           <Dialog
-            as="div"
+            as={motion.div}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 overflow-y-auto"
             onClose={() => setIsDeleteModalOpen(false)}
           >
-            <div className="min-h-screen px-4 text-center">
-              <Transition.Child
-                as={Fragment}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0"
-                enterTo="opacity-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100"
-                leaveTo="opacity-0"
-              >
-                <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
-              </Transition.Child>
+            <div className="min-h-screen px-4 text-center flex items-center justify-center">
+              <Dialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
 
-              <span
-                className="inline-block h-screen align-middle"
-                aria-hidden="true"
+              <motion.div
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.95, opacity: 0 }}
+                className="relative bg-white dark:bg-gray-800 rounded-2xl p-6 max-w-md w-full mx-auto shadow-xl"
               >
-                &#8203;
-              </span>
+                <Dialog.Title className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+                  Delete Post
+                </Dialog.Title>
+                <Dialog.Description className="text-gray-500 dark:text-gray-400 mb-6">
+                  Are you sure you want to delete this post? This action cannot
+                  be undone.
+                </Dialog.Description>
 
-              <Transition.Child
-                as={Fragment}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0 scale-95"
-                enterTo="opacity-100 scale-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100 scale-100"
-                leaveTo="opacity-0 scale-95"
-              >
-                <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-gray-800 shadow-xl rounded-2xl">
-                  <Dialog.Title
-                    as="h3"
-                    className="text-lg font-medium leading-6 text-gray-900 dark:text-white"
+                <div className="flex justify-end space-x-3">
+                  <button
+                    className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                    onClick={() => setIsDeleteModalOpen(false)}
                   >
-                    Delete Post
-                  </Dialog.Title>
-                  <div className="mt-2">
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      Are you sure you want to delete this post? This action
-                      cannot be undone.
-                    </p>
-                  </div>
-
-                  <div className="mt-4 flex justify-end space-x-3">
-                    <button
-                      type="button"
-                      className="inline-flex justify-center px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-gray-700 border border-transparent rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 focus:outline-none"
-                      onClick={() => setIsDeleteModalOpen(false)}
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="button"
-                      className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md hover:bg-red-700 focus:outline-none"
-                      onClick={deletePost}
-                    >
-                      Delete
-                    </button>
-                  </div>
+                    Cancel
+                  </button>
+                  <button
+                    className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                    onClick={deletePost}
+                  >
+                    Delete
+                  </button>
                 </div>
-              </Transition.Child>
+              </motion.div>
             </div>
           </Dialog>
-        </Transition>
-      </motion.div>
+        )}
+      </AnimatePresence>
 
-      {/* Login Prompt Message */}
+      {/* Login Prompt */}
       <LoginPrompt
         isOpen={showLoginPrompt}
         onClose={() => setShowLoginPrompt(false)}

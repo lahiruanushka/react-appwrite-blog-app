@@ -1,26 +1,31 @@
 import React from "react";
 import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import appwriteService from "../services/storageService";
+import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { PostForm } from "../components";
+import postService from "../services/postService";
 
 function EditPostPage() {
   const [post, setPost] = useState(null);
-  const { slug } = useParams();
-  const navigate = useNavigate();
+  const { postId } = useParams();
 
   useEffect(() => {
-    if (slug) {
-      appwriteService.getPost(slug).then((post) => {
-        if (post) {
-          setPost(post);
-        } else {
-          navigate("/");
+    const fetchPostToEdit = async () => {
+      if (postId) {
+        try {
+          const fetchedPost = await postService.getPost(postId);
+          if (fetchedPost) {
+            console.log(fetchedPost);
+            setPost(fetchedPost);
+          }
+        } catch (error) {
+          console.log(error);
         }
-      });
-    }
-  }, [slug, navigate]);
+      }
+    };
+
+    fetchPostToEdit();
+  }, [postId]);
 
   return (
     <div className="min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900 transition-colors duration-300 mx-auto">

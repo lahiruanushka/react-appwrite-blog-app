@@ -96,9 +96,9 @@ function LoginPage() {
         </Button>
 
         <p className="text-center text-gray-600 dark:text-gray-400">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link
-            to="/signup"
+            to="/sign-up"
             className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300"
           >
             Sign up

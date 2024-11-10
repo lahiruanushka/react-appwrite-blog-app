@@ -11,6 +11,7 @@ import {
 } from "react-icons/hi";
 import { Button, Input, AuthLayout } from "../components";
 import authService from "../services/authService";
+import { login } from "../store/authSlice";
 
 function SignUpPage() {
   const navigate = useNavigate();
@@ -32,8 +33,12 @@ function SignUpPage() {
         password,
         name: fullname, // Pass fullname as name
       });
-      console.log("User signed up and logged in:", session);
-      navigate("/");
+
+      if (session) {
+        const userData = await authService.getCurrentUser();
+        if (userData) dispatch(login({ userData }));
+        navigate("/");
+      }
     } catch (error) {
       setError(error.message);
       setIsOpen(true);
@@ -96,7 +101,7 @@ function SignUpPage() {
         <p className="text-center text-gray-600 dark:text-gray-400">
           Already have an account?{" "}
           <Link
-            to="/login"
+            to="/sign-in"
             className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300"
           >
             Sign in

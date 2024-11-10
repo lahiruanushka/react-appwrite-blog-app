@@ -11,6 +11,7 @@ import SearchBar from "./SearchBar";
 import HeroSection from "./HeroSection";
 import FeaturedPosts from "./FeaturedPosts";
 import PopularPosts from "./DiscoverStories";
+import CategoryFilter from "./CategoryFilter";
 import ScrollToTop from "./ScrollToTop";
 import ToastMessage from "./ToastMessage";
 import ErrorMessage from "./ErrorMessage";
@@ -34,6 +35,7 @@ export {
   HeroSection,
   FeaturedPosts,
   PopularPosts,
+  CategoryFilter,
   ScrollToTop,
   ToastMessage,
   ErrorMessage,

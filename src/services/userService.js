@@ -8,15 +8,6 @@ class UserService {
     this.databases = new Databases(client);
   }
 
-  async getUser(userId) {
-    try {
-      return await this.account.get(userId); // Fetch the user by ID
-    } catch (error) {
-      console.error("UserService :: getUser() :: ", error);
-      throw error;
-    }
-  }
-
   async getUserProfile(userId) {
     if (!userId) {
       throw new Error("User ID must be provided");

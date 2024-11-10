@@ -18,7 +18,7 @@ const PostCard = ({
   featuredImage,
   title,
   userId,
-  $slug,
+  slug,
 }) => {
   const [previewUrl, setPreviewUrl] = useState("");
   const [isBookmarked, setIsBookmarked] = useState(false);
@@ -141,10 +141,11 @@ const PostCard = ({
 
             {/* Content Container */}
             <div className="p-6">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3 line-clamp-2 hover:text-purple-600 dark:hover:text-purple-400 transition-colors">
-                {title}
-              </h2>
-
+              <Link to={`/post/${$id}`}>
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3 line-clamp-2 hover:text-purple-600 dark:hover:text-purple-400 transition-colors">
+                  {title}
+                </h2>
+              </Link>
               <div className="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-3">
                 {parse(content)}
               </div>
@@ -166,29 +167,17 @@ const PostCard = ({
                     <span>{Math.ceil(content.length / 1000)} min read</span>
                   </div>
                 </div>
-
-                <motion.div
-                  whileHover={{ x: 5 }}
-                  className="flex items-center gap-1 text-purple-600 dark:text-purple-400 font-medium"
-                >
-                  <div className="card-content">
-                    <Link to={`/post/${$id}`}>
-                      <span>Read More</span>
-                    </Link>
-                  </div>
-                </motion.div>
               </div>
             </div>
           </div>
         </div>
       </motion.div>
-      
+
       {/* Login Prompt Message */}
       <LoginPrompt
         isOpen={showLoginPrompt}
         onClose={() => setShowLoginPrompt(false)}
       />
-      
     </>
   );
 };

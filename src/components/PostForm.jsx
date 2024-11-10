@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -10,6 +10,12 @@ import storageService from "../services/storageService";
 import postService from "../services/postService";
 
 export default function PostForm({ post }) {
+  const navigate = useNavigate();
+  const userData = useSelector((state) => state.user.userData);
+  const [preview, setPreview] = useState(null);
+  const [imageError, setImageError] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+
   const {
     register,
     handleSubmit,
@@ -17,28 +23,99 @@ export default function PostForm({ post }) {
     setValue,
     control,
     getValues,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
-      title: post?.title || "",
-      slug: post?.slug || "",
-      content: post?.content || "",
-      status: post?.status || "active",
+      title: "",
+      slug: "",
+      content: "",
+      status: "active",
+      image: [],
     },
   });
 
-  const navigate = useNavigate();
-  const userData = useSelector((state) => state.user.userData);
-  const [preview, setPreview] = React.useState(
-    post?.featuredImage
-      ? storageService.getFilePreview(post.featuredImage)
-      : null
-  );
-  const [imageError, setImageError] = React.useState("");
+  // Initialize form with post data
+  useEffect(() => {
+    const initializeForm = async () => {
+      if (post) {
+        // Reset form with post data
+        reset({
+          title: post.title,
+          slug: post.slug,
+          content: post.content,
+          status: post.status,
+          image: [],
+        });
+
+        // Set preview image if post has featuredImage
+        if (post.featuredImage) {
+          try {
+            const imageUrl = await storageService.getFilePreview(
+              post.featuredImage
+            );
+            setPreview(imageUrl);
+          } catch (error) {
+            console.error("Error loading featured image:", error);
+            setImageError("Failed to load featured image");
+          }
+        }
+      }
+      setIsLoading(false);
+    };
+
+    initializeForm();
+  }, [post, reset]);
+
+  const slugTransform = useCallback((value) => {
+    if (value && typeof value === "string")
+      return value
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-zA-Z\d\s]+/g, "-")
+        .replace(/\s/g, "-");
+    return "";
+  }, []);
+
+  useEffect(() => {
+    const subscription = watch((value, { name }) => {
+      if (name === "title") {
+        setValue("slug", slugTransform(value.title), { shouldValidate: true });
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [watch, slugTransform, setValue]);
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (!["image/png", "image/jpg", "image/jpeg"].includes(file.type)) {
+        setImageError("Invalid file type. Please upload a PNG or JPG image.");
+        return;
+      }
+      if (file.size > 10 * 1024 * 1024) {
+        setImageError("File size must be less than 10MB");
+        return;
+      }
+      setImageError("");
+      setPreview(URL.createObjectURL(file));
+      setValue("image", [file]);
+    }
+  };
+
+  const handleRemoveImage = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setPreview(null);
+    setValue("image", []);
+    if (!post?.featuredImage) {
+      setImageError("Featured image is required");
+    }
+  };
 
   const submit = async (data) => {
     try {
-      setImageError(""); // Clear any previous errors
+      setImageError("");
       let fileId = post?.featuredImage;
 
       // Handle new image upload if provided
@@ -86,58 +163,20 @@ export default function PostForm({ post }) {
         });
       }
 
-      navigate("/");
+      navigate("/profile");
     } catch (error) {
       console.error("Error submitting post:", error);
       setImageError(error.message);
     }
   };
 
-  const slugTransform = useCallback((value) => {
-    if (value && typeof value === "string")
-      return value
-        .trim()
-        .toLowerCase()
-        .replace(/[^a-zA-Z\d\s]+/g, "-")
-        .replace(/\s/g, "-");
-  }, []);
-
-  React.useEffect(() => {
-    const subscription = watch((value, { name }) => {
-      if (name === "title") {
-        setValue("slug", slugTransform(value.title), { shouldValidate: true });
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, [watch, slugTransform, setValue]);
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      if (!["image/png", "image/jpg", "image/jpeg"].includes(file.type)) {
-        setImageError("Invalid file type. Please upload a PNG or JPG image.");
-        return;
-      }
-      if (file.size > 10 * 1024 * 1024) {
-        // 10MB limit
-        setImageError("File size must be less than 10MB");
-        return;
-      }
-      setImageError(""); // Clear any previous errors
-      setPreview(URL.createObjectURL(file));
-      setValue("image", [file]); // Set the file in the form
-    }
-  };
-
-  const handleRemoveImage = (e) => {
-    e.preventDefault(); // Prevent form submission
-    e.stopPropagation(); // Prevent event bubbling
-    setPreview(null);
-    setValue("image", []); // Clear the file input
-    if (!post?.featuredImage) {
-      setImageError("Featured image is required");
-    }
-  };
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-purple-500 border-t-transparent"></div>
+      </div>
+    );
+  }
 
   return (
     <motion.div

@@ -50,8 +50,8 @@ const UserProfilePage = () => {
     try {
       authService.logout().then(() => {
         dispatch(logout());
+        navigate("/sign-in");
       });
-      navigate("/login");
     } catch (err) {
       setError("Failed to sign out. Please try again.");
     }
@@ -60,7 +60,7 @@ const UserProfilePage = () => {
   const handleDeleteAccount = async () => {
     try {
       await userService.deleteCurrentUser();
-      navigate("/login");
+      navigate("/sign-in");
     } catch (err) {
       setError("Failed to delete account. Please try again.");
     }
