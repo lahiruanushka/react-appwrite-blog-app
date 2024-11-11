@@ -1,6 +1,8 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { LuArrowRight } from "react-icons/lu";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -25,6 +27,8 @@ const itemVariants = {
 };
 
 const HeroSection = () => {
+  const authStatus = useSelector((state) => state.user.isAuthenticated);
+
   return (
     <section className="relative overflow-hidden bg-gray-50 dark:bg-gray-900 py-24 sm:py-32">
       {/* Background pattern */}
@@ -65,13 +69,15 @@ const HeroSection = () => {
               <LuArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
             </motion.button>
 
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="px-6 py-3 rounded-full border-2 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-semibold hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-300"
-            >
-              Create Account
-            </motion.button>
+            {!authStatus && (
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-6 py-3 rounded-full border-2 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-semibold hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-300"
+              >
+                <Link to="sign-up">Create Account</Link>
+              </motion.button>
+            )}
           </motion.div>
 
           <motion.div

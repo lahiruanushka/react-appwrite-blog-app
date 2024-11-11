@@ -24,12 +24,15 @@ const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
 
-  const navItems = [
-    { name: "Home", href: "/", icon: LuHome },
+  const publicNavItems = [{ name: "Home", href: "/", icon: LuHome }];
+
+  const privateNavItems = [
     { name: "Write", href: "/create-post", icon: LuPencil },
     { name: "Bookmarks", href: "/bookmarks", icon: LuBookmark },
     { name: "Profile", href: "/profile", icon: LuUser },
   ];
+
+  const navItems = [...publicNavItems, ...(authStatus ? privateNavItems : [])];
 
   const handleThemeToggle = () => {
     dispatch(toggleTheme());
