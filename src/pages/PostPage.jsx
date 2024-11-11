@@ -160,14 +160,13 @@ const PostPage = () => {
   };
 
   const handleAuthorClick = (userId) => {
-
     if (!isAuthenticated) {
       setShowLoginPrompt(true);
       return;
     }
 
     navigate(`/author/${userId}`);
-  }
+  };
 
   if (loading) {
     return (
@@ -297,7 +296,9 @@ const PostPage = () => {
                   className="flex items-center space-x-6"
                 >
                   <div
-                    onClick={() => {handleAuthorClick(user.$id)}}
+                    onClick={() => {
+                      handleAuthorClick(user.$id);
+                    }}
                     className="flex items-center space-x-3 group cursor-pointer"
                   >
                     <img
@@ -315,8 +316,8 @@ const PostPage = () => {
 
                   <div className="flex items-center text-gray-300">
                     <LuClock className="w-4 h-4 mr-2" />
-                    <time dateTime={post.created}>
-                      {new Date(post.created).toLocaleDateString("en-US", {
+                    <time dateTime={post.$updatedAt}>
+                      {new Date(post.$updatedAt).toLocaleDateString("en-US", {
                         year: "numeric",
                         month: "long",
                         day: "numeric",
