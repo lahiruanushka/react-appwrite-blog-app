@@ -128,7 +128,6 @@ const UserProfilePage = () => {
         ...prev,
         ...formData,
       }));
-      console.log("user data", user);
       setIsEditing(false);
     } catch (err) {
       console.log(err);
@@ -148,8 +147,12 @@ const UserProfilePage = () => {
 
   const handleDeleteAccount = async () => {
     try {
-      await userService.deleteCurrentUser();
-      navigate("/sign-in");
+      await userService.softDeleteUserProfile(user.$id);
+
+      authService.logout().then(() => {
+        dispatch(logout());
+        navigate("/sign-in");
+      });
     } catch (err) {
       setError("Failed to delete account. Please try again.");
     }
@@ -341,9 +344,10 @@ const UserProfilePage = () => {
                 Delete Account
               </h3>
               <p className="text-gray-600 dark:text-gray-300 mb-6">
-                Are you sure you want to delete your account? This action cannot
-                be undone and all your data will be permanently deleted.
+                Are you sure you want to delete your account? Your data will be
+                temporarily deactivated and permanently deleted after 30 days.
               </p>
+
               <div className="flex gap-4">
                 <motion.button
                   whileHover={{ scale: 1.05 }}

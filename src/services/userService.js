@@ -101,6 +101,29 @@ class UserService {
       throw error;
     }
   }
+
+  async softDeleteUserProfile(userId) {
+    if (!userId) {
+      throw new Error("User ID must be provided");
+    }
+
+    const updatedData = {
+      isDeleted: true, // Mark the user as deleted
+    };
+
+    try {
+      return await this.databases.updateDocument(
+        conf.appwriteDatabaseId,
+        conf.appwriteUserProfileCollectionId,
+        userId, // Use userId as the document ID
+        updatedData
+      );
+    } catch (error) {
+      console.error("UserService :: softDeleteUserProfile() :: ", error);
+      throw error;
+    }
+  }
+
 }
 
 const userService = new UserService();
