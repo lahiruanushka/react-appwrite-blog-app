@@ -2,17 +2,17 @@ import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { 
-  LuCalendar, 
-  LuLogOut, 
-  LuMail, 
-  LuTrash2, 
-  LuUser, 
+import {
+  LuCalendar,
+  LuLogOut,
+  LuMail,
+  LuTrash2,
+  LuUser,
   LuSave,
   LuX,
-  LuFileEdit
+  LuFileEdit,
 } from "react-icons/lu";
-import {Input} from "../components";
+import { Input } from "../components";
 import { logout } from "../store/authSlice";
 import authService from "../services/authService";
 import userService from "../services/userService";
@@ -29,10 +29,10 @@ const UserProfilePage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [userPosts, setUserPosts] = useState([]);
-  
+
   // Form state
   const [formData, setFormData] = useState({
-    name: "",
+    fullName: "",
     username: "",
   });
   const [formErrors, setFormErrors] = useState({});
@@ -47,7 +47,7 @@ const UserProfilePage = () => {
           const userData = { ...currentUser, ...userProfile };
           setUser(userData);
           setFormData({
-            name: userData.name || "",
+            fullName: userData.fullName || "",
             username: userData.username || "",
           });
 
@@ -67,42 +67,71 @@ const UserProfilePage = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
     // Clear error when user starts typing
     if (formErrors[name]) {
-      setFormErrors(prev => ({
+      setFormErrors((prev) => ({
         ...prev,
-        [name]: null
+        [name]: null,
       }));
     }
   };
 
-  const validateForm = () => {
+  const validateForm = async () => {
     const errors = {};
-    if (!formData.name.trim()) errors.name = "Name is required";
-    if (!formData.username.trim()) errors.username = "Username is required";
-    if (formData.username.length < 3) errors.username = "Username must be at least 3 characters";
+
+    // Name validation
+    if (!formData.fullName.trim()) errors.name = "Name is required";
+
+    // Username validations
+    if (!formData.username.trim()) {
+      errors.username = "Username is required";
+    } else if (formData.username.length < 3) {
+      errors.username = "Username must be at least 3 characters";
+    } else if (!/^[a-zA-Z0-9_]+$/.test(formData.username)) {
+      errors.username =
+        "Username can only contain letters, numbers, and underscores";
+    }
+
+    // Check username uniqueness
+    try {
+      const isUnique = await userService.checkUsernameUniqueness(
+        formData.username,
+        user.username
+      );
+      if (!isUnique) {
+        errors.username =
+          "Username already exists. Please choose a different one.";
+      }
+    } catch (error) {
+      console.error("Error checking username uniqueness:", error);
+    }
+
     return errors;
   };
 
   const handleUpdateProfile = async () => {
-    const errors = validateForm();
+    const errors = await validateForm();
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors);
       return;
     }
 
     try {
-      await userService.updateProfile(user.$id, formData);
-      setUser(prev => ({
+      const { username, fullName } = formData;
+
+      await userService.updateUserProfile(user.$id, username, fullName);
+      setUser((prev) => ({
         ...prev,
-        ...formData
+        ...formData,
       }));
+      console.log("user data", user);
       setIsEditing(false);
     } catch (err) {
+      console.log(err);
       setError("Failed to update profile. Please try again.");
     }
   };
@@ -127,7 +156,7 @@ const UserProfilePage = () => {
   };
 
   if (loading) return <Loading loading={true} />;
-  
+
   if (error) return <ErrorMessage title={error} error={error} />;
 
   return (
@@ -158,7 +187,7 @@ const UserProfilePage = () => {
                   </div>
                 )}
               </motion.div>
-              
+
               {!isEditing && (
                 <motion.button
                   whileHover={{ scale: 1.05 }}
@@ -178,8 +207,8 @@ const UserProfilePage = () => {
                 <div className="space-y-4">
                   <Input
                     label="Name"
-                    name="name"
-                    value={formData.name}
+                    name="fullName"
+                    value={formData.fullName}
                     onChange={handleInputChange}
                     error={formErrors.name}
                     icon={LuUser}
@@ -218,7 +247,7 @@ const UserProfilePage = () => {
               ) : (
                 <>
                   <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                    {user?.name}
+                    {user?.fullName}
                   </h1>
                   <div className="text-lg text-gray-600 dark:text-gray-300">
                     @{user?.username}
