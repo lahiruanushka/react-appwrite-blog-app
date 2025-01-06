@@ -28,7 +28,6 @@ import VerifyEmailInstructionsPage from "./pages/VerifyEmailInstructionsPage";
 import VerifyEmailCompletePage from "./pages/VerifyEmailCompletePage";
 import { ForgotPasswordPage } from "./pages/ForgotPasswordPage";
 import { ResetPasswordPage } from "./pages/ResetPasswordPage";
-import { ChangePasswordPage } from "./pages/ChangePasswordPage";
 
 function App() {
   const theme = useSelector((state) => state.theme.theme);
@@ -88,10 +87,6 @@ function App() {
           <Route
             path="/profile"
             element={<PrivateRoute element={<UserProfilePage />} />}
-          />
-          <Route
-            path="/change-password"
-            element={<PrivateRoute element={<ChangePasswordPage />} />}
           />
           <Route
             path="/bookmarks"
