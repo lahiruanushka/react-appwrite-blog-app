@@ -70,6 +70,32 @@ export class AuthService {
     }
   }
 
+  async sendPasswordResetEmail(email) {
+    try {
+      return await this.account.createRecovery(
+        email,
+        `${import.meta.env.VITE_FRONTEND_URL}/reset-password`
+      );
+    } catch (error) {
+      console.error("Error in sendPasswordResetEmail:", error);
+      throw error;
+    }
+  }
+
+  async resetPassword(userId, secret, password, confirmPassword) {
+    try {
+      return await this.account.updateRecovery(
+        userId,
+        secret,
+        password,
+        confirmPassword
+      );
+    } catch (error) {
+      console.error("Error in resetPassword:", error);
+      throw error;
+    }
+  }
+
   async getCurrentUser() {
     try {
       return await this.account.get();

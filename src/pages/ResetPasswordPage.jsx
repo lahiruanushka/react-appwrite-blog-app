@@ -2,7 +2,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Button, Input, AuthLayout } from "../components";
 import { HiCheckCircle } from "react-icons/hi2";
 import authService from "../services/authService";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { HiOutlineLockClosed } from "react-icons/hi";
 
@@ -15,8 +15,10 @@ export function ResetPasswordPage() {
   const [error, setError] = useState("");
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
-  const token = new URLSearchParams(location.search).get("token");
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const userId = urlParams.get("userId");
+  const secret = urlParams.get("secret");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,11 +27,16 @@ export function ResetPasswordPage() {
       return;
     }
 
+    if (!userId && !secret) {
+      setError("Invalid Reset Password link.");
+      return;
+    }
+
     setIsLoading(true);
     setError("");
 
     try {
-      await authService.resetPassword(token, passwords.password);
+      await authService.resetPassword(userId, secret, passwords.password, passwords.confirmPassword);
       setShowSuccessModal(true);
     } catch (error) {
       setError(error.message || "Failed to reset password. Please try again.");
@@ -101,7 +108,7 @@ export function ResetPasswordPage() {
               <Button
                 onClick={() => {
                   setShowSuccessModal(false);
-                  navigate("/auth/sign-in");
+                  navigate("/sign-in");
                 }}
                 className="w-full"
               >

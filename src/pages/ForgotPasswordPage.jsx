@@ -84,7 +84,7 @@ export function ForgotPasswordPage() {
               <Button
                 onClick={() => {
                   setShowSuccessModal(false);
-                  navigate("/auth/sign-in");
+                  navigate("/sign-in");
                 }}
                 className="w-full"
               >
