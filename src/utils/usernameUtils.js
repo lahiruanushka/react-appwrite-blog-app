@@ -1,13 +1,19 @@
 export function createUsername(fullName) {
-  // Split the full name into an array of words
+  // Trim the input and handle cases with 2 characters
   const nameParts = fullName.trim().split(" ");
-  
-  // Get the first initial and the last name
-  const firstInitial = nameParts[0]?.charAt(0).toLowerCase() || "";
-  const lastName = nameParts.length > 1 ? nameParts[nameParts.length - 1].toLowerCase() : "";
 
-  // Combine to create base username
-  let username = firstInitial + lastName;
+  let username = "";
+
+  if (nameParts.length === 1 && nameParts[0].length <= 2) {
+    // If the input is a single name with 2 or fewer characters, use the whole input
+    username = nameParts[0].toLowerCase();
+  } else {
+    // Get the first initial and the last name for other cases
+    const firstInitial = nameParts[0]?.charAt(0).toLowerCase() || "";
+    const lastName =
+      nameParts.length > 1 ? nameParts[nameParts.length - 1].toLowerCase() : "";
+    username = firstInitial + lastName;
+  }
 
   // Remove any special characters from the username
   username = username.replace(/[^a-z0-9]/g, "");

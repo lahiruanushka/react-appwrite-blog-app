@@ -16,6 +16,7 @@ import { login } from "../store/authSlice";
 function SignUpPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const {
     register,
     handleSubmit,
@@ -39,11 +40,13 @@ function SignUpPage() {
         if (userData) dispatch(login({ userData }));
         navigate("/");
       }
+      
     } catch (error) {
       setError(error.message);
       setIsOpen(true);
     }
   };
+
 
   return (
     <AuthLayout

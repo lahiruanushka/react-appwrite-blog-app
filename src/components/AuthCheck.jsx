@@ -10,15 +10,15 @@ const AuthCheck = () => {
     const checkAuth = async () => {
       dispatch(setLoading(true));
       try {
-        const user = await authService.checkAuth(); // Check if user is authenticated
-
+        const user = await authService.checkAuth();
         if (user) {
-          dispatch(login({ userData: user })); // Dispatch login with user data
+          dispatch(login({ userData: user }));
         } else {
-          dispatch(logout()); // If no user, dispatch logout
+          dispatch(logout());
         }
       } catch (error) {
-        dispatch(logout()); // Handle any errors by logging out
+        console.error("Auth check error:", error);
+        dispatch(logout());
       } finally {
         dispatch(setLoading(false));
       }
@@ -27,7 +27,7 @@ const AuthCheck = () => {
     checkAuth();
   }, [dispatch]);
 
-  return null; // No UI to render
+  return null;
 };
 
 export default AuthCheck;

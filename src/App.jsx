@@ -13,10 +13,22 @@ import PostPage from "./pages/PostPage";
 import AddPostPage from "./pages/AddPostPage";
 import EditPostPage from "./pages/EditPostPage";
 import LoginPage from "./pages/LoginPage";
-import SignUpPage from "./pages/SignupPage";
+import SignUpPage from "./pages/SignUpPage";
 import BookmarksPage from "./pages/BookmarksPage";
 import NotFoundPage from "./pages/NotFoundPage";
-import { Header, Footer, ScrollToTop, AuthRoute,PrivateRoute, AuthCheck  } from "./components";
+import {
+  Header,
+  Footer,
+  ScrollToTop,
+  AuthRoute,
+  PrivateRoute,
+  AuthCheck,
+} from "./components";
+import VerifyEmailInstructionsPage from "./pages/VerifyEmailInstructionsPage";
+import VerifyEmailCompletePage from "./pages/VerifyEmailCompletePage";
+import { ForgotPasswordPage } from "./pages/ForgotPasswordPage";
+import { ResetPasswordPage } from "./pages/ResetPasswordPage";
+import { ChangePasswordPage } from "./pages/ChangePasswordPage";
 
 function App() {
   const theme = useSelector((state) => state.theme.theme);
@@ -29,7 +41,7 @@ function App() {
     <Router>
       <Header />
       <ToastProvider>
-      <AuthCheck />
+        <AuthCheck />
 
         <Routes>
           {/* Public Routes */}
@@ -38,18 +50,59 @@ function App() {
           <Route path="/category/:categoryId" element={<CategoryPage />} />
           <Route path="/search" element={<SearchPage />} />
 
-          {/* Private Routes */}
-          <Route path="/create-post" element={<PrivateRoute element={<AddPostPage />} />} />
-          <Route path="/edit-post/:postId" element={<PrivateRoute element={<EditPostPage />} />} />
-          <Route path="/profile" element={<PrivateRoute element={<UserProfilePage />} />} />
-          <Route path="/bookmarks" element={<PrivateRoute element={<BookmarksPage />} />} />
-          <Route path="/author/:authorId" element={<PrivateRoute element={<AuthorPage />} />} />
+          {/* Auth Routes - for non-authenticated users */}
+          <Route
+            path="/sign-in"
+            element={<AuthRoute element={<LoginPage />} />}
+          />
+          <Route
+            path="/sign-up"
+            element={<AuthRoute element={<SignUpPage />} />}
+          />
+          <Route
+            path="/verify-email"
+            element={ <VerifyEmailInstructionsPage />}
+          />
+          <Route
+            path="/verify-email/verify"
+            element={<VerifyEmailCompletePage />}
+          />
+          <Route
+            path="/forgot-password"
+            element={<AuthRoute element={<ForgotPasswordPage />} />}
+          />
+          <Route
+            path="/reset-password"
+            element={<AuthRoute element={<ResetPasswordPage />} />}
+          />
 
-          {/* Auth Routes */}
-          <Route path="/sign-in" element={<AuthRoute element={<LoginPage />} />} />
-          <Route path="/sign-up" element={<AuthRoute element={<SignUpPage />} />} />
+          {/* Private Routes - require authentication */}
+          <Route
+            path="/create-post"
+            element={<PrivateRoute element={<AddPostPage />} />}
+          />
+          <Route
+            path="/edit-post/:postId"
+            element={<PrivateRoute element={<EditPostPage />} />}
+          />
+          <Route
+            path="/profile"
+            element={<PrivateRoute element={<UserProfilePage />} />}
+          />
+          <Route
+            path="/change-password"
+            element={<PrivateRoute element={<ChangePasswordPage />} />}
+          />
+          <Route
+            path="/bookmarks"
+            element={<PrivateRoute element={<BookmarksPage />} />}
+          />
+          <Route
+            path="/author/:authorId"
+            element={<PrivateRoute element={<AuthorPage />} />}
+          />
 
-          {/* Redirect unknown routes */}
+          {/* 404 Route */}
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
 
