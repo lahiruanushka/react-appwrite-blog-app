@@ -7,8 +7,6 @@ const PrivateRoute = ({ element }) => {
   const { isAuthenticated, loading, userData } = useSelector((state) => state.user);
   const location = useLocation();
 
-  console.log(userData);
-
   if (loading) {
     return <Loading />;
   }
