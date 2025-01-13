@@ -15,7 +15,6 @@ function EditPostPage() {
         try {
           const fetchedPost = await postService.getPost(postId);
           if (fetchedPost) {
-            console.log(fetchedPost);
             setPost(fetchedPost);
           }
         } catch (error) {

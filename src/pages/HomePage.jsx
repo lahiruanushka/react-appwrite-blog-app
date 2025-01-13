@@ -12,6 +12,7 @@ import { Puff } from "react-loader-spinner";
 import postService from "../services/postService";
 import DiscoverStories from "../components/DiscoverStories";
 import ScrollToTopButton from "../components/ScrollToTopButton";
+import { Query } from "appwrite";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -45,7 +46,9 @@ function Home() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const fetchedPosts = await postService.getPosts();
+        // Add a Query filter for active status
+        const queries = [Query.equal("status", "active")];
+        const fetchedPosts = await postService.getPosts(queries);
         if (fetchedPosts) {
           setPosts(fetchedPosts.documents);
         }
@@ -56,7 +59,7 @@ function Home() {
         setLoading(false);
       }
     };
-
+  
     fetchPosts();
   }, []);
 
