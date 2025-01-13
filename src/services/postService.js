@@ -95,6 +95,28 @@ class PostService {
     }
   }
 
+  async getPostsByCategory(category) {
+    try {
+      const queries = [
+        category === "All" 
+          ? Query.equal("status", "active")
+          : Query.and([
+              Query.equal("status", "active"),
+              Query.equal("category", category)
+            ])
+      ];
+
+      return await this.databases.listDocuments(
+        conf.appwriteDatabaseId,
+        conf.appwritePostCollectionId,
+        queries
+      );
+    } catch (error) {
+      console.error("PostService :: getPostsByCategory :: ", error);
+      throw error;
+    }
+  }
+
   async getUserPosts(userId) {
     if (!userId) {
       throw new Error("User ID must be provided");

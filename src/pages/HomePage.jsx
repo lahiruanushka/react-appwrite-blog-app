@@ -48,8 +48,17 @@ function Home() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        // Add a Query filter for active status
-        const queries = [Query.equal("status", "active")];
+        setLoading(true);
+        let queries = [];
+        
+        // Base query for active posts
+        queries.push(Query.equal("status", "active"));
+        
+        // Add category filter if not "All"
+        if (activeCategory !== "All") {
+          queries.push(Query.equal("category", activeCategory));
+        }
+        
         const fetchedPosts = await postService.getPosts(queries);
         if (fetchedPosts) {
           setPosts(fetchedPosts.documents);
@@ -63,7 +72,7 @@ function Home() {
     };
   
     fetchPosts();
-  }, []);
+  }, [activeCategory]); // Re-fetch when category changes
 
   
   // Debounce the search to avoid too many API calls
@@ -78,20 +87,28 @@ function Home() {
   const handleSearch = async (searchTerm) => {
     setSearchTerm(searchTerm);
     
-    if (!searchTerm.trim()) {
-      // If search is empty, fetch all posts
-      const allPosts = await postService.getPosts([Query.equal('status', 'active')]);
-      setPosts(allPosts.documents);
-      return;
-    }
-  
     try {
       setIsSearching(true);
-      const results = await postService.searchPosts(searchTerm);
+      let queries = [];
+      
+      // Add search query if there's a search term
+      if (searchTerm.trim()) {
+        queries.push(Query.contains("title", searchTerm));
+      }
+      
+      // Always include active status
+      queries.push(Query.equal("status", "active"));
+      
+      // Add category filter if not "All"
+      if (activeCategory !== "All") {
+        queries.push(Query.equal("category", activeCategory));
+      }
+      
+      const results = await postService.getPosts(queries);
       setPosts(results.documents);
     } catch (error) {
       console.error('Search error:', error);
-      // Handle error (show error message to user)
+      setError("Search failed. Please try again.");
     } finally {
       setIsSearching(false);
     }
