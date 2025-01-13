@@ -29,24 +29,20 @@ function SignUpPage() {
     setError("");
     try {
       const { fullname, email, password } = data;
-      const session = await authService.createAccount({
+      await authService.createAccount({
         email,
         password,
         name: fullname, // Pass fullname as name
       });
 
-      if (session) {
-        const userData = await authService.getCurrentUser();
-        if (userData) dispatch(login({ userData }));
-        navigate("/");
-      }
-      
+      // Refresh the page and redirect to the home page
+      window.location.reload();
+      navigate("/", { replace: true });
     } catch (error) {
       setError(error.message);
       setIsOpen(true);
     }
   };
-
 
   return (
     <AuthLayout
