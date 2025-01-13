@@ -1,6 +1,6 @@
 import { FaSearch } from "react-icons/fa";
 
-const SearchBar = ({ onSearch }) => {
+const SearchBar = ({ onSearch, isSearching }) => {
   return (
     <div className="relative w-full sm:w-96 mx-auto mb-8">
       <input
@@ -10,7 +10,11 @@ const SearchBar = ({ onSearch }) => {
         onChange={(e) => onSearch(e.target.value)}
       />
       <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-        <FaSearch className="text-gray-400 dark:text-gray-500" />
+        {isSearching ? (
+          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-400" />
+        ) : (
+          <FaSearch className="text-gray-400 dark:text-gray-500" />
+        )}
       </div>
     </div>
   );

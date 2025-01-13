@@ -74,6 +74,27 @@ class PostService {
     }
   }
 
+  async searchPosts(searchTerm) {
+    try {
+      const queries = [
+        Query.or([
+          Query.search("title", searchTerm),
+          Query.search("content", searchTerm),
+        ]),
+        Query.equal("status", "active"), // only search active posts
+      ];
+
+      return await this.databases.listDocuments(
+        conf.appwriteDatabaseId,
+        conf.appwritePostCollectionId,
+        queries
+      );
+    } catch (error) {
+      console.error("PostService :: searchPosts :: ", error);
+      throw error;
+    }
+  }
+
   async getUserPosts(userId) {
     if (!userId) {
       throw new Error("User ID must be provided");

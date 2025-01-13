@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import {
   SearchBar,
@@ -42,6 +42,8 @@ function Home() {
   const [error, setError] = useState(null);
   const [activeCategory, setActiveCategory] = useState("All");
   const [searchVisible, setSearchVisible] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -63,9 +65,43 @@ function Home() {
     fetchPosts();
   }, []);
 
-  const handleSearch = () => {
-    // Implement search functionality
+  
+  // Debounce the search to avoid too many API calls
+  const debounce = (func, delay) => {
+    let timeoutId;
+    return (...args) => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => func(...args), delay);
+    };
   };
+  
+  const handleSearch = async (searchTerm) => {
+    setSearchTerm(searchTerm);
+    
+    if (!searchTerm.trim()) {
+      // If search is empty, fetch all posts
+      const allPosts = await postService.getPosts([Query.equal('status', 'active')]);
+      setPosts(allPosts.documents);
+      return;
+    }
+  
+    try {
+      setIsSearching(true);
+      const results = await postService.searchPosts(searchTerm);
+      setPosts(results.documents);
+    } catch (error) {
+      console.error('Search error:', error);
+      // Handle error (show error message to user)
+    } finally {
+      setIsSearching(false);
+    }
+  };
+  
+  // Create debounced version of search
+  const debouncedSearch = useMemo(
+    () => debounce(handleSearch, 300),
+    []
+  );
 
   const categories = [
     { id: 1, name: "All" },
@@ -137,7 +173,7 @@ function Home() {
           className="overflow-hidden"
         >
           <div className="container mx-auto px-4 py-4">
-            <SearchBar onSearch={handleSearch} />
+            <SearchBar onSearch={debouncedSearch} isSearching={isSearching} />
           </div>
         </motion.div>
       </motion.div>
