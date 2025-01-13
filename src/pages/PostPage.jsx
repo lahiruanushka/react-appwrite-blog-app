@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import parse from "html-react-parser";
 import { motion, AnimatePresence } from "framer-motion";
-import { Dialog } from "@headlessui/react";
+import { Dialog as HeadlessDialog } from "@headlessui/react";
 import {
   LuBookmark,
   LuBookMarked,
@@ -151,7 +151,7 @@ const PostPage = () => {
         const status = await postService.deletePost(post.$id);
         if (status) {
           await storageService.deleteFile(post.featuredImage);
-          navigate("/");
+          navigate("/profile");
         }
       }
     } catch (error) {
@@ -229,13 +229,11 @@ const PostPage = () => {
                   onClick={handleBookmark}
                   className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
                 >
-                  <LuBookMarked
-                    className={`w-5 h-5 ${
-                      isBookmarked
-                        ? "fill-purple-500 text-purple-500"
-                        : "text-gray-600 dark:text-gray-300"
-                    }`}
-                  />
+                  {isBookmarked ? (
+                    <LuBookMarked className="w-5 h-5 fill-purple-500 text-purple-500" />
+                  ) : (
+                    <LuBookmark className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+                  )}
                 </motion.button>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
@@ -378,52 +376,40 @@ const PostPage = () => {
       </motion.div>
 
       {/* Delete Confirmation Modal */}
-      <AnimatePresence>
-        {isDeleteModalOpen && (
-          <Dialog
-            as={motion.div}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 overflow-y-auto"
-            onClose={() => setIsDeleteModalOpen(false)}
-          >
-            <div className="min-h-screen px-4 text-center flex items-center justify-center">
-              <Dialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
+      <HeadlessDialog
+        open={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        className="relative z-50"
+      >
+        <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
 
-              <motion.div
-                initial={{ scale: 0.95, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.95, opacity: 0 }}
-                className="relative bg-white dark:bg-gray-800 rounded-2xl p-6 max-w-md w-full mx-auto shadow-xl"
+        <div className="fixed inset-0 flex items-center justify-center p-4">
+          <HeadlessDialog.Panel className="bg-white dark:bg-gray-800 rounded-2xl p-6 max-w-md w-full mx-auto shadow-xl">
+            <HeadlessDialog.Title className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+              Delete Post
+            </HeadlessDialog.Title>
+            <HeadlessDialog.Description className="text-gray-500 dark:text-gray-400 mb-6">
+              Are you sure you want to delete this post? This action cannot be
+              undone.
+            </HeadlessDialog.Description>
+
+            <div className="flex justify-end space-x-3">
+              <button
+                className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                onClick={() => setIsDeleteModalOpen(false)}
               >
-                <Dialog.Title className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-                  Delete Post
-                </Dialog.Title>
-                <Dialog.Description className="text-gray-500 dark:text-gray-400 mb-6">
-                  Are you sure you want to delete this post? This action cannot
-                  be undone.
-                </Dialog.Description>
-
-                <div className="flex justify-end space-x-3">
-                  <button
-                    className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-                    onClick={() => setIsDeleteModalOpen(false)}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-                    onClick={deletePost}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </motion.div>
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                onClick={deletePost}
+              >
+                Delete
+              </button>
             </div>
-          </Dialog>
-        )}
-      </AnimatePresence>
+          </HeadlessDialog.Panel>
+        </div>
+      </HeadlessDialog>
 
       {/* Login Prompt */}
       <LoginPrompt
