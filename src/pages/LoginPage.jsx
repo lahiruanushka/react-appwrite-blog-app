@@ -12,6 +12,7 @@ import { Button, Input, AuthLayout } from "../components";
 import authService from "../services/authService";
 import { login as authLogin } from "../store/authSlice";
 import GoogleSignInButton from "../components/GoogleSignInButton";
+import FacebookSignInButton from "../components/FacebookSignInButton";
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -119,11 +120,12 @@ function LoginPage() {
           </div>
         </div>
 
-        <div className="mt-6">
+        <div className="mt-6 space-y-3">
           <GoogleSignInButton />
+          <FacebookSignInButton />
         </div>
       </div>
-
+      
       <Dialog
         open={isOpen}
         onClose={() => setIsOpen(false)}

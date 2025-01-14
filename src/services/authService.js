@@ -1,6 +1,6 @@
 import { Account, ID } from "appwrite";
 import client from "../conf/appwriteClient";
-import userService from "./userService"; // Import UserService
+import userService from "./userService";
 import { createUsername } from "../utils/usernameUtils";
 
 export class AuthService {
@@ -18,21 +18,18 @@ export class AuthService {
       );
 
       if (userAccount) {
-        // Ensure user is authenticated before sending verification
         const session = await this.login({ email, password });
-
-        // Now that the user is logged in, get the current user
         const currentUser = await this.getCurrentUser();
-
         const username = createUsername(name);
 
-        // Create profile for the user
-        await userService.createUserProfile(currentUser.$id, username, name);
+        await userService.createUserProfile(currentUser.$id, username, name, {
+          email,
+          emailVerified: false,
+          provider: "email",
+        });
 
         if (session) {
-          this.createVerification();
-        } else {
-          console.error("User authentication failed after account creation.");
+          await this.createVerification();
         }
       }
     } catch (error) {
@@ -56,7 +53,7 @@ export class AuthService {
     try {
       return await this.account.updateVerification(userId, secret);
     } catch (error) {
-      console.log("Error in verify email:", error);
+      console.error("Error in verify email:", error);
       throw error;
     }
   }
@@ -116,52 +113,59 @@ export class AuthService {
 
   async checkAuth() {
     try {
-      // Attempt to get the current user
-      return await this.account.get(); // This will throw if not authenticated
+      return await this.account.get();
     } catch (error) {
       console.error("User is not authenticated:", error);
-      return null; // Return null if not authenticated
+      return null;
     }
   }
 
-  async signInWithGoogle() {
+  // Unified OAuth method
+  async signInWithOAuth(provider, scopes = []) {
     try {
-      // Start OAuth session
       await this.account.createOAuth2Session(
-        'google',
-        `${import.meta.env.VITE_FRONTEND_URL}/auth/callback`, // Redirect to our callback handler
-        `${import.meta.env.VITE_FRONTEND_URL}/login`,         // Failure URL
+        provider,
+        `${import.meta.env.VITE_FRONTEND_URL}/auth/callback`,
+        `${import.meta.env.VITE_FRONTEND_URL}/login`,
+        scopes
       );
     } catch (error) {
-      console.error("Error in Google OAuth:", error);
+      console.error(`Error in ${provider} OAuth:`, error);
       throw error;
     }
   }
 
-  async handleOAuthCallback() {
+  // Convenience methods for specific providers
+  async signInWithGoogle() {
+    return this.signInWithOAuth("google");
+  }
+
+  async signInWithFacebook() {
+    return this.signInWithOAuth("facebook", ["email", "public_profile"]);
+  }
+
+  // Unified OAuth callback handler
+  async handleOAuthCallback(provider = null) {
     try {
-      // Get the current user after OAuth redirect
       const user = await this.account.get();
-      
-      // Check if this is a new user by trying to get their profile
+
       let userProfile;
       try {
         userProfile = await userService.getUserProfile(user.$id);
       } catch (error) {
-        // If profile doesn't exist, create one for the new user
         if (error.code === 404) {
-          const name = user.name || 'User';
+          const name = user.name || "User";
           const username = createUsername(name);
-          
+
           userProfile = await userService.createUserProfile(
             user.$id,
             username,
             name,
             {
               email: user.email,
-              emailVerified: true, // Google OAuth emails are verified
-              avatarUrl: user.prefs?.avatar || '',
-              provider: 'google'
+              emailVerified: true,
+              avatarUrl: user.prefs?.avatar || "",
+              provider: provider || "oauth",
             }
           );
         } else {
@@ -169,24 +173,10 @@ export class AuthService {
         }
       }
 
-      return {
-        user,
-        profile: userProfile
-      };
+      return { user, profile: userProfile };
     } catch (error) {
       console.error("Error in OAuth callback:", error);
       throw error;
-    }
-  }
-
-  // Helper method to check if user exists
-  async checkUserExists(email) {
-    try {
-      // Try to get list of sessions for this email
-      const sessions = await this.account.listSessions();
-      return sessions.total > 0;
-    } catch (error) {
-      return false;
     }
   }
 }

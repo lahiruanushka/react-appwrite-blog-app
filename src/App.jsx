@@ -29,6 +29,7 @@ import VerifyEmailCompletePage from "./pages/VerifyEmailCompletePage";
 import { ForgotPasswordPage } from "./pages/ForgotPasswordPage";
 import { ResetPasswordPage } from "./pages/ResetPasswordPage";
 import OAuthCallback from "./components/OAuthCallback";
+import MaintenancePage from "./pages/MaintenancePage";
 
 function App() {
   const theme = useSelector((state) => state.theme.theme);
@@ -101,6 +102,8 @@ function App() {
             path="/author/:authorId"
             element={<PrivateRoute element={<AuthorPage />} />}
           />
+
+          <Route path="/maintenance" element={<MaintenancePage />} />
 
           {/* 404 Route */}
           <Route path="*" element={<NotFoundPage />} />

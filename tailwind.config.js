@@ -7,6 +7,12 @@ export default {
       animation: {
         spin: "spin 1s linear infinite",
       },
+      colors: {
+        facebook: '#1877F2',
+      },
+      ringColors: {
+        facebook: '#1877F2',
+      },
     },
   },
   plugins: [],

@@ -13,6 +13,7 @@ import { Button, Input, AuthLayout } from "../components";
 import authService from "../services/authService";
 import { login } from "../store/authSlice";
 import GoogleSignInButton from "../components/GoogleSignInButton";
+import FacebookSignInButton from "../components/FacebookSignInButton";
 
 function SignUpPage() {
   const navigate = useNavigate();
@@ -109,6 +110,7 @@ function SignUpPage() {
         </p>
       </form>
 
+ 
       <div className="mt-6">
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
@@ -121,8 +123,9 @@ function SignUpPage() {
           </div>
         </div>
 
-        <div className="mt-6">
+        <div className="mt-6 space-y-3">
           <GoogleSignInButton />
+          <FacebookSignInButton />
         </div>
       </div>
 
