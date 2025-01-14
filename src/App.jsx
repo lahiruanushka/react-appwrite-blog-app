@@ -28,6 +28,7 @@ import VerifyEmailInstructionsPage from "./pages/VerifyEmailInstructionsPage";
 import VerifyEmailCompletePage from "./pages/VerifyEmailCompletePage";
 import { ForgotPasswordPage } from "./pages/ForgotPasswordPage";
 import { ResetPasswordPage } from "./pages/ResetPasswordPage";
+import OAuthCallback from "./components/OAuthCallback";
 
 function App() {
   const theme = useSelector((state) => state.theme.theme);
@@ -60,7 +61,7 @@ function App() {
           />
           <Route
             path="/verify-email"
-            element={ <VerifyEmailInstructionsPage />}
+            element={<VerifyEmailInstructionsPage />}
           />
           <Route
             path="/verify-email/verify"
@@ -73,6 +74,10 @@ function App() {
           <Route
             path="/reset-password"
             element={<AuthRoute element={<ResetPasswordPage />} />}
+          />
+          <Route
+            path="/auth/callback"
+            element={<AuthRoute element={<OAuthCallback />} />}
           />
 
           {/* Private Routes - require authentication */}

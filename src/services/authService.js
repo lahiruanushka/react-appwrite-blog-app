@@ -123,6 +123,72 @@ export class AuthService {
       return null; // Return null if not authenticated
     }
   }
+
+  async signInWithGoogle() {
+    try {
+      // Start OAuth session
+      await this.account.createOAuth2Session(
+        'google',
+        `${import.meta.env.VITE_FRONTEND_URL}/auth/callback`, // Redirect to our callback handler
+        `${import.meta.env.VITE_FRONTEND_URL}/login`,         // Failure URL
+      );
+    } catch (error) {
+      console.error("Error in Google OAuth:", error);
+      throw error;
+    }
+  }
+
+  async handleOAuthCallback() {
+    try {
+      // Get the current user after OAuth redirect
+      const user = await this.account.get();
+      
+      // Check if this is a new user by trying to get their profile
+      let userProfile;
+      try {
+        userProfile = await userService.getUserProfile(user.$id);
+      } catch (error) {
+        // If profile doesn't exist, create one for the new user
+        if (error.code === 404) {
+          const name = user.name || 'User';
+          const username = createUsername(name);
+          
+          userProfile = await userService.createUserProfile(
+            user.$id,
+            username,
+            name,
+            {
+              email: user.email,
+              emailVerified: true, // Google OAuth emails are verified
+              avatarUrl: user.prefs?.avatar || '',
+              provider: 'google'
+            }
+          );
+        } else {
+          throw error;
+        }
+      }
+
+      return {
+        user,
+        profile: userProfile
+      };
+    } catch (error) {
+      console.error("Error in OAuth callback:", error);
+      throw error;
+    }
+  }
+
+  // Helper method to check if user exists
+  async checkUserExists(email) {
+    try {
+      // Try to get list of sessions for this email
+      const sessions = await this.account.listSessions();
+      return sessions.total > 0;
+    } catch (error) {
+      return false;
+    }
+  }
 }
 
 const authService = new AuthService();
