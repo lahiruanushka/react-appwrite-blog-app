@@ -13,7 +13,8 @@ const GoogleSignInButton = () => {
   const handleGoogleSignIn = async () => {
     try {
       setIsLoading(true);
-      await authService.signInWithGoogle();
+      // await authService.signInWithGoogle();
+      navigate("/maintenance");
     } catch (error) {
       console.error("Google sign-in failed:", error);
       setError(error.message);
