@@ -4,11 +4,14 @@ import { FcGoogle } from "react-icons/fc";
 import authService from "../services/authService";
 import Button from "./Button";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
+import { useNavigate } from "react-router-dom";
 
 const GoogleSignInButton = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleGoogleSignIn = async () => {
     try {
