@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Dialog, Transition } from "@headlessui/react";
-import {  HiOutlineMail, HiCheckCircle } from "react-icons/hi";
+import { HiOutlineMail, HiCheckCircle } from "react-icons/hi";
 import { Button, Input, AuthLayout } from "../components";
 import authService from "../services/authService";
 
@@ -21,7 +21,9 @@ export function ForgotPasswordPage() {
       await authService.sendPasswordResetEmail(email);
       setShowSuccessModal(true);
     } catch (error) {
-      setError(error.message || "Failed to send reset email. Please try again.");
+      setError(
+        error.message || "Failed to send reset email. Please try again."
+      );
     } finally {
       setIsLoading(false);
     }
@@ -79,16 +81,17 @@ export function ForgotPasswordPage() {
                 </Dialog.Title>
               </div>
               <Dialog.Description className="text-gray-600 dark:text-gray-400 mb-4">
-                We've sent password reset instructions to {email}. Please check your inbox.
+                We've sent password reset instructions to {email}. Please check
+                your inbox.
               </Dialog.Description>
               <Button
                 onClick={() => {
                   setShowSuccessModal(false);
-                  navigate("/sign-in");
+                  navigate("/password-reset-instructions");
                 }}
                 className="w-full"
               >
-                Return to Sign In
+                Got it!
               </Button>
             </Dialog.Panel>
           </div>

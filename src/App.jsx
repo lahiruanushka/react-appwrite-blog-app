@@ -30,6 +30,7 @@ import { ForgotPasswordPage } from "./pages/ForgotPasswordPage";
 import { ResetPasswordPage } from "./pages/ResetPasswordPage";
 import OAuthCallback from "./components/OAuthCallback";
 import MaintenancePage from "./pages/MaintenancePage";
+import PasswordResetInstructionsPage from "./pages/PasswordResetInstructionsPage";
 
 function App() {
   const theme = useSelector((state) => state.theme.theme);
@@ -75,6 +76,10 @@ function App() {
           <Route
             path="/reset-password"
             element={<AuthRoute element={<ResetPasswordPage />} />}
+          />
+          <Route
+            path="/password-reset-instructions"
+            element={<AuthRoute element={<PasswordResetInstructionsPage />} />}
           />
           <Route
             path="/auth/callback"
