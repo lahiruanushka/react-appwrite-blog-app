@@ -15,6 +15,7 @@ export default function PostForm({ post }) {
   const [preview, setPreview] = useState(null);
   const [imageError, setImageError] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [categories, setCategories] = useState([]);
 
   const {
     register,
@@ -30,6 +31,7 @@ export default function PostForm({ post }) {
       title: "",
       slug: "",
       content: "",
+      category: 1,
       status: "active",
       image: [],
     },
@@ -44,6 +46,7 @@ export default function PostForm({ post }) {
           title: post.title,
           slug: post.slug,
           content: post.content,
+          category: post.category,
           status: post.status,
           image: [],
         });
@@ -66,6 +69,19 @@ export default function PostForm({ post }) {
 
     initializeForm();
   }, [post, reset]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const categories = await postService.getCategories();
+        setCategories(categories.documents);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   const slugTransform = useCallback((value) => {
     if (value && typeof value === "string")
@@ -150,6 +166,7 @@ export default function PostForm({ post }) {
         title: data.title,
         slug: data.slug,
         content: data.content,
+        category: data.category,
         status: data.status,
         featuredImage: fileId,
       };
@@ -294,6 +311,29 @@ export default function PostForm({ post }) {
                   </label>
                 </div>
               </div>
+
+              {/* Category Select */}
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Category
+                </label>
+                <select
+                  {...register("category", { required: true })}
+                  defaultValue=""
+                  placeholder="Select Category"
+                  className="block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-gray-900 dark:text-white focus:border-blue-500 focus:ring-blue-500"
+                >
+                  <option value="" disabled>
+                    Select Category
+                  </option>
+                  {categories.map((category) => (
+                    <option key={category.id} value={category.name}>
+                      {category.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               {/* Status Select */}
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -302,6 +342,7 @@ export default function PostForm({ post }) {
                 <select
                   {...register("status")}
                   className="block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-gray-900 dark:text-white focus:border-blue-500 focus:ring-blue-500"
+                  disabled
                 >
                   <option value="active">Active</option>
                   <option value="inactive">Inactive</option>

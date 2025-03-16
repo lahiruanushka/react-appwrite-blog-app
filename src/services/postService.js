@@ -98,12 +98,12 @@ class PostService {
   async getPostsByCategory(category) {
     try {
       const queries = [
-        category === "All" 
+        category === "All"
           ? Query.equal("status", "active")
           : Query.and([
               Query.equal("status", "active"),
-              Query.equal("category", category)
-            ])
+              Query.equal("category", category),
+            ]),
       ];
 
       return await this.databases.listDocuments(
@@ -133,6 +133,19 @@ class PostService {
       return response.documents; // Return the array of documents
     } catch (error) {
       console.error("PostService :: getUserPosts() :: ", error);
+      throw error;
+    }
+  }
+
+  async getCategories(queries = []) {
+    try {
+      return await this.databases.listDocuments(
+        conf.appwriteDatabaseId,
+        conf.appwritePostCategoryCollectionId,
+        queries
+      );
+    } catch (error) {
+      console.error("categoryService :: getcategorys() :: ", error);
       throw error;
     }
   }

@@ -44,6 +44,7 @@ function Home() {
   const [searchVisible, setSearchVisible] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [isSearching, setIsSearching] = useState(false);
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -74,7 +75,20 @@ function Home() {
     fetchPosts();
   }, [activeCategory]); // Re-fetch when category changes
 
-  
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const categories = await postService.getCategories();
+        setCategories(categories.documents);
+      }
+      catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+    
   // Debounce the search to avoid too many API calls
   const debounce = (func, delay) => {
     let timeoutId;
@@ -119,14 +133,6 @@ function Home() {
     () => debounce(handleSearch, 300),
     []
   );
-
-  const categories = [
-    { id: 1, name: "All" },
-    { id: 2, name: "Development" },
-    { id: 3, name: "Design" },
-    { id: 4, name: "Marketing" },
-    { id: 5, name: "Business" },
-  ];
 
   if (loading) {
     return <Loading loading={true} />;
